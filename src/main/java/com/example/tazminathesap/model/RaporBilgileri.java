@@ -1,6 +1,11 @@
 package com.example.tazminathesap.model;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 public class RaporBilgileri extends BaseEntity {
@@ -12,6 +17,10 @@ public class RaporBilgileri extends BaseEntity {
 	private String raporunDuzenlenecegiMakam;
 	private String esasNo;
 	
+	@JsonBackReference
+	@OneToOne(fetch = FetchType.EAGER, optional = true)
+	@JoinColumn(name = "tazminat_id", nullable = true)
+	private TazminatRapor tazminatRapor;
 	
 	public RaporBilgileri(String davaliAdi, String davaciAdi, String davaciVekili, String bilirkisi,
 			String raporunDuzenlenecegiMakam, String esasNo) {
@@ -23,7 +32,9 @@ public class RaporBilgileri extends BaseEntity {
 		this.raporunDuzenlenecegiMakam = raporunDuzenlenecegiMakam;
 		this.esasNo = esasNo;
 	}
-	
+	public RaporBilgileri() {
+		super();
+	}
 	public String getDavaliAdi() {
 		return davaliAdi;
 	}
@@ -59,5 +70,17 @@ public class RaporBilgileri extends BaseEntity {
 	}
 	public void setEsasNo(String esasNo) {
 		this.esasNo = esasNo;
+	}
+	public void setTazminatRapor(TazminatRapor tazminatRapor) {
+		this.tazminatRapor = tazminatRapor;
+	}
+	public TazminatRapor getTazminatRapor() {
+		return this.tazminatRapor;
+	}
+	@Override
+	public String toString() {
+		return "RaporBilgileri [davaliAdi=" + davaliAdi + ", davaciAdi=" + davaciAdi + ", davaciVekili=" + davaciVekili
+				+ ", bilirkisi=" + bilirkisi + ", raporunDuzenlenecegiMakam=" + raporunDuzenlenecegiMakam + ", esasNo="
+				+ esasNo + "]";
 	}
 }

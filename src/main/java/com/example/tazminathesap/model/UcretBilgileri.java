@@ -1,6 +1,11 @@
 package com.example.tazminathesap.model;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 public class UcretBilgileri extends BaseEntity {
@@ -11,7 +16,11 @@ public class UcretBilgileri extends BaseEntity {
 	private Double gunlukYemek;
 	private Double gunlukYakacak;
 	private Double gunlukDigerHaklar;
-
+	@JsonBackReference
+	@OneToOne(fetch = FetchType.EAGER, optional = true)
+	@JoinColumn(name = "tazminat_id", nullable = true)
+	private TazminatRapor tazminatRapor;
+	
 	public UcretBilgileri(Double gunlukCiplakYevmiye, Double gunlukIkramiye, Double gunlukServis, Double gunlukYemek,
 			Double gunlukYakacak, Double gunlukDigerHaklar) {
 		super();
@@ -62,6 +71,21 @@ public class UcretBilgileri extends BaseEntity {
 	}
 	public void setGunlukDigerHaklar(Double gunlukDigerHaklar) {
 		this.gunlukDigerHaklar = gunlukDigerHaklar;
+	}
+
+	public TazminatRapor getTazminatRapor() {
+		return tazminatRapor;
+	}
+
+	public void setTazminatRapor(TazminatRapor tazminatRapor) {
+		this.tazminatRapor = tazminatRapor;
+	}
+
+	@Override
+	public String toString() {
+		return "UcretBilgileri [gunlukCiplakYevmiye=" + gunlukCiplakYevmiye + ", gunlukIkramiye=" + gunlukIkramiye
+				+ ", gunlukServis=" + gunlukServis + ", gunlukYemek=" + gunlukYemek + ", gunlukYakacak=" + gunlukYakacak
+				+ ", gunlukDigerHaklar=" + gunlukDigerHaklar + "]";
 	}
 	
 	

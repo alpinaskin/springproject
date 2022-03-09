@@ -1,6 +1,11 @@
 package com.example.tazminathesap.model;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 public class EkBilgiler extends BaseEntity {
@@ -15,6 +20,11 @@ public class EkBilgiler extends BaseEntity {
 	private Boolean kazalininMedeniHali; //Evli 1, Bekar 0
 	private Boolean kazalininEsiCalisiyor; // Evet 1, Hayir 0
 	
+	@JsonBackReference
+	@OneToOne(fetch = FetchType.EAGER, optional = true)
+	@JoinColumn(name = "tazminat_id", nullable = true)
+	private TazminatRapor tazminatRapor;
+	
 	public EkBilgiler(Integer davaliKusurOrani, Integer maluliyetOrani, Double sgkAyligiPesinDegeri,
 			Double geciciIsGoremezlikTutari, Double maddiTazminatIstek, Boolean kazaliCinsiyet,
 			Integer kazalininCocukSayisi, Boolean kazalininMedeniHali, Boolean kazalininEsiCalisiyor) {
@@ -28,6 +38,9 @@ public class EkBilgiler extends BaseEntity {
 		this.kazalininCocukSayisi = kazalininCocukSayisi;
 		this.kazalininMedeniHali = kazalininMedeniHali;
 		this.kazalininEsiCalisiyor = kazalininEsiCalisiyor;
+	}
+	public EkBilgiler() {
+		super();
 	}
 	public Integer getDavaliKusurOrani() {
 		return davaliKusurOrani;
@@ -82,6 +95,20 @@ public class EkBilgiler extends BaseEntity {
 	}
 	public void setKazalininEsiCalisiyor(Boolean kazalininEsiCalisiyor) {
 		this.kazalininEsiCalisiyor = kazalininEsiCalisiyor;
+	}
+	public TazminatRapor getTazminatRapor() {
+		return tazminatRapor;
+	}
+	public void setTazminatRapor(TazminatRapor tazminatRapor) {
+		this.tazminatRapor = tazminatRapor;
+	}
+	@Override
+	public String toString() {
+		return "EkBilgiler [davaliKusurOrani=" + davaliKusurOrani + ", maluliyetOrani=" + maluliyetOrani
+				+ ", sgkAyligiPesinDegeri=" + sgkAyligiPesinDegeri + ", geciciIsGoremezlikTutari="
+				+ geciciIsGoremezlikTutari + ", maddiTazminatIstek=" + maddiTazminatIstek + ", kazaliCinsiyet="
+				+ kazaliCinsiyet + ", kazalininCocukSayisi=" + kazalininCocukSayisi + ", kazalininMedeniHali="
+				+ kazalininMedeniHali + ", kazalininEsiCalisiyor=" + kazalininEsiCalisiyor + "]";
 	}
 	
 	

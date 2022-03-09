@@ -2,21 +2,38 @@ package com.example.tazminathesap.model;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 public class TazminatRapor extends BaseEntity{
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "raporBilgileri_id", referencedColumnName="id")
+	@JsonManagedReference
+	@OneToOne(mappedBy="tazminatRapor", cascade = CascadeType.ALL, orphanRemoval = true)
 	private RaporBilgileri raporBilgileri;
-	@OneToOne(cascade = CascadeType.ALL)
+	@JsonManagedReference
+	@OneToOne(mappedBy="tazminatRapor", cascade = CascadeType.ALL, orphanRemoval = true)
 	private UcretBilgileri ucretBilgileri;
-	@OneToOne(cascade = CascadeType.ALL)
+	@JsonManagedReference
+	@OneToOne(mappedBy="tazminatRapor", cascade = CascadeType.ALL, orphanRemoval = true)
 	private TarihBilgileri tarihBilgileri;
-	@OneToOne(cascade = CascadeType.ALL)
+	@JsonManagedReference
+	@OneToOne(mappedBy="tazminatRapor", cascade = CascadeType.ALL, orphanRemoval = true)
 	private EkBilgiler ekBilgiler;
 	
+	public TazminatRapor(RaporBilgileri raporBilgileri, UcretBilgileri ucretBilgileri, TarihBilgileri tarihBilgileri,
+			EkBilgiler ekBilgiler) {
+		super();
+		this.raporBilgileri = raporBilgileri;
+		this.ucretBilgileri = ucretBilgileri;
+		this.tarihBilgileri = tarihBilgileri;
+		this.ekBilgiler = ekBilgiler;
+	}
+	public TazminatRapor() {
+		super();
+	}
 	public RaporBilgileri getRaporBilgileri() {
 		return raporBilgileri;
 	}
@@ -40,6 +57,11 @@ public class TazminatRapor extends BaseEntity{
 	}
 	public void setEkBilgiler(EkBilgiler ekBilgiler) {
 		this.ekBilgiler = ekBilgiler;
+	}
+	@Override
+	public String toString() {
+		return "TazminatRapor [raporBilgileri=" + raporBilgileri + ", ucretBilgileri=" + ucretBilgileri
+				+ ", tarihBilgileri=" + tarihBilgileri + ", ekBilgiler=" + ekBilgiler + "]";
 	}
 	
 }

@@ -3,6 +3,11 @@ package com.example.tazminathesap.model;
 import java.time.LocalDate;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 public class TarihBilgileri extends BaseEntity {
@@ -13,6 +18,21 @@ public class TarihBilgileri extends BaseEntity {
 	private LocalDate kazaTarihi;
 	private LocalDate UcretTarihi;
 	private LocalDate istirahatBitisTarihi;
+	@JsonBackReference
+	@OneToOne(fetch = FetchType.EAGER, optional = true)
+	@JoinColumn(name = "tazminat_id", nullable = true)
+	private TazminatRapor tazminatRapor;
+	
+	public TarihBilgileri(LocalDate raporTarihi, LocalDate davaTarihi, LocalDate kazaliDogumTarihi,
+			LocalDate kazaTarihi, LocalDate ucretTarihi, LocalDate istirahatBitisTarihi) {
+		super();
+		this.raporTarihi = raporTarihi;
+		this.davaTarihi = davaTarihi;
+		this.kazaliDogumTarihi = kazaliDogumTarihi;
+		this.kazaTarihi = kazaTarihi;
+		this.UcretTarihi = ucretTarihi;
+		this.istirahatBitisTarihi = istirahatBitisTarihi;
+	}
 	
 	public TarihBilgileri() {
 		super();
@@ -53,5 +73,20 @@ public class TarihBilgileri extends BaseEntity {
 	}
 	public void setIstirahatBitisTarihi(LocalDate istirahatBitisTarihi) {
 		this.istirahatBitisTarihi = istirahatBitisTarihi;
+	}
+
+	public TazminatRapor getTazminatRapor() {
+		return tazminatRapor;
+	}
+
+	public void setTazminatRapor(TazminatRapor tazminatRapor) {
+		this.tazminatRapor = tazminatRapor;
+	}
+
+	@Override
+	public String toString() {
+		return "TarihBilgileri [raporTarihi=" + raporTarihi + ", davaTarihi=" + davaTarihi + ", kazaliDogumTarihi="
+				+ kazaliDogumTarihi + ", kazaTarihi=" + kazaTarihi + ", UcretTarihi=" + UcretTarihi
+				+ ", istirahatBitisTarihi=" + istirahatBitisTarihi + "]";
 	}
 }

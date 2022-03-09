@@ -14,8 +14,9 @@
 	<name>tazminathesap</name>
 	<description>Bilirkişi tazminat hesaplama aplikasyonu</description>
 	<properties>
-		<java.version>11</java.version>
-	</properties>
+		<jdk.version>17</jdk.version>
+		<jdk>C:\Users\bd2007413\jdk-17.0.2</jdk>
+	</properties> 
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -25,7 +26,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>1.4.190</version>
+			<scope>runtime</scope>
 		</dependency>
 		
 		<dependency>
@@ -38,7 +39,11 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
+		
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
+        </dependency>
 	</dependencies>
 
 	<build>
