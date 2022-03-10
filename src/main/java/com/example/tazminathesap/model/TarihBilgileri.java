@@ -16,7 +16,7 @@ public class TarihBilgileri extends BaseEntity {
 	private LocalDate davaTarihi;
 	private LocalDate kazaliDogumTarihi;
 	private LocalDate kazaTarihi;
-	private LocalDate UcretTarihi;
+	private LocalDate ucretTarihi;
 	private LocalDate istirahatBitisTarihi;
 	@JsonBackReference
 	@OneToOne(fetch = FetchType.EAGER, optional = true)
@@ -30,7 +30,7 @@ public class TarihBilgileri extends BaseEntity {
 		this.davaTarihi = davaTarihi;
 		this.kazaliDogumTarihi = kazaliDogumTarihi;
 		this.kazaTarihi = kazaTarihi;
-		this.UcretTarihi = ucretTarihi;
+		this.ucretTarihi = ucretTarihi;
 		this.istirahatBitisTarihi = istirahatBitisTarihi;
 	}
 	
@@ -63,10 +63,10 @@ public class TarihBilgileri extends BaseEntity {
 		this.kazaTarihi = kazaTarihi;
 	}
 	public LocalDate getUcretTarihi() {
-		return UcretTarihi;
+		return ucretTarihi;
 	}
 	public void setUcretTarihi(LocalDate ucretTarihi) {
-		UcretTarihi = ucretTarihi;
+		this.ucretTarihi = ucretTarihi;
 	}
 	public LocalDate getIstirahatBitisTarihi() {
 		return istirahatBitisTarihi;
@@ -86,7 +86,7 @@ public class TarihBilgileri extends BaseEntity {
 	@Override
 	public String toString() {
 		return "TarihBilgileri [raporTarihi=" + raporTarihi + ", davaTarihi=" + davaTarihi + ", kazaliDogumTarihi="
-				+ kazaliDogumTarihi + ", kazaTarihi=" + kazaTarihi + ", UcretTarihi=" + UcretTarihi
+				+ kazaliDogumTarihi + ", kazaTarihi=" + kazaTarihi + ", ucretTarihi=" + ucretTarihi
 				+ ", istirahatBitisTarihi=" + istirahatBitisTarihi + "]";
 	}
 }
