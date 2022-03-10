@@ -1,5 +1,8 @@
 package com.example.tazminathesap.service.jpa;
 
+import java.util.Date;
+import java.util.List;
+
 import com.example.tazminathesap.model.AsgariUcret;
 import com.example.tazminathesap.repository.AsgariUcretRepository;
 import com.example.tazminathesap.service.AsgariUcretService;
@@ -11,6 +14,11 @@ public class AsgariUcretServiceJPA extends AbstractJpaService<AsgariUcret, Asgar
 
     public AsgariUcretServiceJPA(AsgariUcretRepository repository) {
         super(repository);
+    }
+
+    @Override
+    public List<AsgariUcret> findAsgariUcretByDate(Date baslangicTarih, Date bitisTarih) {
+        return repository.findAllAsgariUcretBetweenDates(baslangicTarih, bitisTarih);
     }
     
 }
