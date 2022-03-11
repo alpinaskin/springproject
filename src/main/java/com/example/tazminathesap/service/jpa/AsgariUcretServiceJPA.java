@@ -1,5 +1,6 @@
 package com.example.tazminathesap.service.jpa;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -19,6 +20,11 @@ public class AsgariUcretServiceJPA extends AbstractJpaService<AsgariUcret, Asgar
     @Override
     public List<AsgariUcret> findAsgariUcretByDate(Date baslangicTarih, Date bitisTarih) {
         return repository.findAllAsgariUcretBetweenDates(baslangicTarih, bitisTarih);
+    }
+
+    @Override
+    public AsgariUcret findAsgariUcretGivenDate(Date tarih){
+        return repository.findAsgariUcretByDate(tarih);
     }
     
 }

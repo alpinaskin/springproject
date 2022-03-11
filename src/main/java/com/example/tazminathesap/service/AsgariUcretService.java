@@ -8,4 +8,6 @@ import com.example.tazminathesap.model.AsgariUcret;
 public interface AsgariUcretService extends CrudService<AsgariUcret>{
     
     public List<AsgariUcret> findAsgariUcretByDate(Date baslangicTarih, Date bitisTarih);
+    
+    public AsgariUcret findAsgariUcretGivenDate(Date tarih);
 }
