@@ -1,16 +1,19 @@
 package com.example.tazminathesap.bootstrap;
 
+import java.sql.Date;
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import com.example.tazminathesap.model.AsgariUcret;
 import com.example.tazminathesap.model.EkBilgiler;
 import com.example.tazminathesap.model.RaporBilgileri;
 import com.example.tazminathesap.model.TarihBilgileri;
 import com.example.tazminathesap.model.TazminatRapor;
 import com.example.tazminathesap.model.UcretBilgileri;
+import com.example.tazminathesap.service.AsgariUcretService;
 import com.example.tazminathesap.service.jpa.EkBilgilerServiceJPA;
 import com.example.tazminathesap.service.jpa.RaporBilgileriServiceJPA;
 import com.example.tazminathesap.service.jpa.TarihBilgileriServiceJPA;
@@ -24,32 +27,73 @@ public class DataLoader implements CommandLineRunner {
 	private final TarihBilgileriServiceJPA tarihBilgileriService;
 	private final UcretBilgileriServiceJPA ucretBilgileriService;
 	private final TazminatRaporServiceJPA tazminatRaporService;
-	
+	private final AsgariUcretService asgariUcretService;
+
 	@Autowired
 	public DataLoader(EkBilgilerServiceJPA ekBilgilerService, 
 					RaporBilgileriServiceJPA raporBilgileriService,
 					TarihBilgileriServiceJPA tarihBilgileriService, 
 					UcretBilgileriServiceJPA ucretBilgileriService,
-					TazminatRaporServiceJPA tazminatRaporService) {
+					TazminatRaporServiceJPA tazminatRaporService,
+					AsgariUcretService asgariUcretService) {
 		super();
 		this.ekBilgilerService = ekBilgilerService;
 		this.raporBilgileriService = raporBilgileriService;
 		this.tarihBilgileriService = tarihBilgileriService;
 		this.ucretBilgileriService = ucretBilgileriService;
 		this.tazminatRaporService = tazminatRaporService;
+		this.asgariUcretService = asgariUcretService;
 	}
 	
 	public void run(String... args) throws Exception {
+
+	
+		asgariUcretService.save(new AsgariUcret(
+			Date.valueOf("2011-01-01"),
+			Date.valueOf("2011-06-30"),
+			796.50
+			));
+		
+		asgariUcretService.save(new AsgariUcret(
+			Date.valueOf("2011-07-01"),
+			Date.valueOf("2011-12-31"),
+			837.
+			));
+					
+		asgariUcretService.save(new AsgariUcret(
+			Date.valueOf("2012-01-01"),
+			Date.valueOf("2012-06-30"),
+			886.50
+			));
+			
+		asgariUcretService.save(new AsgariUcret(
+			Date.valueOf("2012-07-01"),
+			Date.valueOf("2012-12-31"),
+			940.50
+			));
+		
+		asgariUcretService.save(new AsgariUcret(
+			Date.valueOf("2013-01-01"),
+			Date.valueOf("2013-06-30"),
+			978.60
+			));
+				
+		asgariUcretService.save(new AsgariUcret(
+			Date.valueOf("2013-07-01"),
+			Date.valueOf("2013-12-31"),
+			1021.50
+			));
+
 		EkBilgiler ilkEkBilgiler = ekBilgilerService.save(new EkBilgiler(54,45,100.0,250.0,12500.0,true,2,true,true));
 		
 		RaporBilgileri ilkRaporBilgisi = raporBilgileriService.save(new RaporBilgileri("Ali","Ahmet","Mehmet","Hüdaverdi","Ankara Asliye Ceza","2012/76"));
 	
-		TarihBilgileri ilkTarihBilgileri = tarihBilgileriService.save(new TarihBilgileri(LocalDate.of(2019, 10, 21),
+		TarihBilgileri ilkTarihBilgileri = tarihBilgileriService.save(new TarihBilgileri(LocalDate.of(2013, 12, 31),
 				LocalDate.of(2009, 11, 5), 
 				LocalDate.of(1975, 4, 12),
-				LocalDate.of(2013, 1, 12),
-				LocalDate.of(2020, 9, 11),
-				LocalDate.of(2017, 6, 10)));
+				LocalDate.of(2012, 1, 1),
+				LocalDate.of(2012, 1, 1),
+				LocalDate.of(2012, 1, 20)));
 		
 		UcretBilgileri ilkUcretBilgisi = ucretBilgileriService.save(new UcretBilgileri(10.0,20.0,50.0,23.2,67.2,20.45));
 		
@@ -67,7 +111,7 @@ public class DataLoader implements CommandLineRunner {
 		System.out.println(tarihBilgileriService.findAll());
 		System.out.println(tazminatRaporService.findAll());
 		System.out.println(ucretBilgileriService.findAll());
-		
+		System.out.println(asgariUcretService.findAsgariUcretByDate(Date.valueOf("2012-12-31"), Date.valueOf("2011-01-01")).toString());
 	}
 	
 }
