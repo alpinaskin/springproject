@@ -13,4 +13,7 @@ public interface AsgariUcretRepository extends JpaRepository<AsgariUcret, Long> 
     
     @Query(value = "select a from AsgariUcret a where a.bitisTarih <= :baslangicTarih and a.baslangicTarih >= :bitisTarih")
     List<AsgariUcret> findAllAsgariUcretBetweenDates(@Param("baslangicTarih") Date baslangicTarih, @Param("bitisTarih") Date bitisTarih);
+
+    @Query(value ="select a from AsgariUcret a where a.bitisTarih >= :tarih and a.baslangicTarih <= :tarih")
+    AsgariUcret findAsgariUcretByDate(@Param("tarih") Date tarih);
 }
