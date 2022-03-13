@@ -1,11 +1,6 @@
 package com.example.tazminathesap.bootstrap;
 
-import java.sql.Date;
 import java.time.LocalDate;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
 
 import com.example.tazminathesap.model.AsgariUcret;
 import com.example.tazminathesap.model.EkBilgiler;
@@ -19,6 +14,10 @@ import com.example.tazminathesap.service.jpa.RaporBilgileriServiceJPA;
 import com.example.tazminathesap.service.jpa.TarihBilgileriServiceJPA;
 import com.example.tazminathesap.service.jpa.TazminatRaporServiceJPA;
 import com.example.tazminathesap.service.jpa.UcretBilgileriServiceJPA;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
 
 @Component
 public class DataLoader implements CommandLineRunner {
@@ -49,38 +48,38 @@ public class DataLoader implements CommandLineRunner {
 
 	
 		asgariUcretService.save(new AsgariUcret(
-			Date.valueOf("2011-01-01"),
-			Date.valueOf("2011-06-30"),
+			LocalDate.of(2011,1,1),
+			LocalDate.of(2011,6,30),
 			796.50
 			));
 		
 		asgariUcretService.save(new AsgariUcret(
-			Date.valueOf("2011-07-01"),
-			Date.valueOf("2011-12-31"),
+			LocalDate.of(2011,7,1),
+			LocalDate.of(2011,12,31),
 			837.
 			));
 					
 		asgariUcretService.save(new AsgariUcret(
-			Date.valueOf("2012-01-01"),
-			Date.valueOf("2012-06-30"),
+			LocalDate.of(2012,1,1),
+			LocalDate.of(2012,6,30),
 			886.50
 			));
 			
 		asgariUcretService.save(new AsgariUcret(
-			Date.valueOf("2012-07-01"),
-			Date.valueOf("2012-12-31"),
+			LocalDate.of(2012,7,1),
+			LocalDate.of(2012,12,31),
 			940.50
 			));
 		
 		asgariUcretService.save(new AsgariUcret(
-			Date.valueOf("2013-01-01"),
-			Date.valueOf("2013-06-30"),
+			LocalDate.of(2013,1,1),
+			LocalDate.of(2013,6,30),
 			978.60
 			));
 				
 		asgariUcretService.save(new AsgariUcret(
-			Date.valueOf("2013-07-01"),
-			Date.valueOf("2013-12-31"),
+			LocalDate.of(2013,7,1),
+			LocalDate.of(2013,12,31),
 			1021.50
 			));
 
@@ -111,7 +110,7 @@ public class DataLoader implements CommandLineRunner {
 		System.out.println(tarihBilgileriService.findAll());
 		System.out.println(tazminatRaporService.findAll());
 		System.out.println(ucretBilgileriService.findAll());
-		System.out.println(asgariUcretService.findAsgariUcretByDate(Date.valueOf("2012-12-31"), Date.valueOf("2011-01-01")).toString());
+		System.out.println(asgariUcretService.findAsgariUcretByDate(LocalDate.of(2012,12,31), LocalDate.of(2011,1,1)).toString());
 	}
 	
 }

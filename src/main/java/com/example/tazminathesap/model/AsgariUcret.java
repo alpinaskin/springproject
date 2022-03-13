@@ -1,17 +1,16 @@
 package com.example.tazminathesap.model;
 
-import java.util.Date;
-
+import java.time.LocalDate;
 import javax.persistence.Entity;
 
 @Entity
 public class AsgariUcret extends BaseEntity { 
 	
-	private Date baslangicTarih;
-	private Date bitisTarih;
+	private LocalDate baslangicTarih;
+	private LocalDate bitisTarih;
 	private Double asgariUcretMiktar;
 
-	public AsgariUcret(Date baslangicTarih, Date bitisTarih, Double asgariUcretMiktar) {
+	public AsgariUcret(LocalDate baslangicTarih, LocalDate bitisTarih, Double asgariUcretMiktar) {
 		this.baslangicTarih = baslangicTarih;
 		this.bitisTarih = bitisTarih;
 		this.asgariUcretMiktar = asgariUcretMiktar;
@@ -21,19 +20,19 @@ public class AsgariUcret extends BaseEntity {
 	}
 	
 
-	public Date getBaslangicTarih() {
+	public LocalDate getBaslangicTarih() {
 		return this.baslangicTarih;
 	}
 
-	public void setBaslangicTarih(Date baslangicTarih) {
+	public void setBaslangicTarih(LocalDate baslangicTarih) {
 		this.baslangicTarih = baslangicTarih;
 	}
 
-	public Date getBitisTarih() {
+	public LocalDate getBitisTarih() {
 		return this.bitisTarih;
 	}
 
-	public void setBitisTarih(Date bitisTarih) {
+	public void setBitisTarih(LocalDate bitisTarih) {
 		this.bitisTarih = bitisTarih;
 	}
 
