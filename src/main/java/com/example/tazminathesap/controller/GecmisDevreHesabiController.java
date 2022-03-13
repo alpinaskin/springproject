@@ -2,9 +2,7 @@ package com.example.tazminathesap.controller;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.List;
 
 import com.example.tazminathesap.model.AsgariUcret;
@@ -43,66 +41,93 @@ public class GecmisDevreHesabiController extends BaseController<GecmisDevreHesab
         GecmisDevreHesabi gecmisDevreHesabi = new GecmisDevreHesabi();
         //TODO: Kazatarihiyılsonu notunu hesapla
         TazminatRapor tazminatRapor = tazminatRaporService.findById(id);
+        LocalDate istirahatBitisTarihi = tazminatRapor.getTarihBilgileri().getIstirahatBitisTarihi();
+        LocalDate kazaTarihi = tazminatRapor.getTarihBilgileri().getKazaTarihi();
+        LocalDate raporTarihi = tazminatRapor.getTarihBilgileri().getRaporTarihi();
         Period period = ikiTarihArasiHesap(tazminatRapor);
         gecmisDevreHesabi.setKazaTarihiRaporYiliSonu("Yıl: " + period.getYears() + " Ay: " + period.getMonths() + " Gün: " + period.getDays());
 
         //TODO: İstirahat dönem zararı hesapla
-        //istirahat süresi x kaza tarihindeki asgari ücret net
-        days = ChronoUnit.DAYS.between(tazminatRapor.getTarihBilgileri().getKazaTarihi(), tazminatRapor.getTarihBilgileri().getIstirahatBitisTarihi());
+        //istirahat süresi x kaza tarihindeki asgari ücret net        
+        setDays(kazaTarihi, istirahatBitisTarihi);
+        
         //kaza tarihindeki asgari ücret
-        Double asgariUcret = getAsgariUcretByDate(tazminatRapor.getTarihBilgileri().getKazaTarihi());
+        Double asgariUcret = getAsgariUcretByDate(kazaTarihi);
         logger.info("******            ASGARİ UCRET : " + asgariUcret);
-        logger.info("******            IstirahatDonemZarari:" + istirahatOncesiDonemZarariHesapla(days.doubleValue(), asgariUcret, tazminatRapor.getEkBilgiler()));
-        gecmisDevreHesabi.setIstirahatliDonemZarari(istirahatOncesiDonemZarariHesapla(days.doubleValue(), asgariUcret, tazminatRapor.getEkBilgiler()));
+        logger.info("******            IstirahatDonemZarari:" + istirahatOncesiDonemZarariHesapla(this.days.doubleValue(), asgariUcret, tazminatRapor.getEkBilgiler()));
+        gecmisDevreHesabi.setIstirahatliDonemZarari(istirahatOncesiDonemZarariHesapla(this.days.doubleValue(), asgariUcret, tazminatRapor.getEkBilgiler()));
         //TODO: İstirahat sonrası zararı hesapla
-
+        //Date dat= Date.from(tazminatRapor.getTarihBilgileri().getIstirahatBitisTarihi().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        //Date dat2 = Date.from(tazminatRapor.getTarihBilgileri().getRaporTarihi().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        istirahatSonrasiZararHesapla(istirahatBitisTarihi, raporTarihi);
         //TODO: Geçmiş Devre zararı hesapla
         return null;
         
+    }
+
+
+    private Double getAsgariUcretByDate(LocalDate tarih){
+        return asgariUcretService.findAsgariUcretGivenDate(tarih).getAsgariUcretMiktar();
+    }
+
+    private Double istirahatOncesiDonemZarariHesapla(Double istirahatliGunSayisi, Double netAsgariUcret, EkBilgiler ekBilgiler)
+    {
+        return istirahatliGunSayisi*netAsgariUcret/30*ekBilgiler.getMaluliyetOrani()/100*ekBilgiler.getDavaliKusurOrani()/100*1.975;
+    }
+
+    private void istirahatSonrasiZararHesapla(LocalDate istirahatBitisTarih, LocalDate raporTarih){
+        List<AsgariUcret> asgariUcretList = asgariUcretService.findAsgariUcretByDate(istirahatBitisTarih, raporTarih);
+        asgariUcretList.forEach((asgariUcret) -> {
+                    LocalDate yilSonu = endOfYear(asgariUcret.getBaslangicTarih());
+
+                    logger.info(istirahatBitisTarih.toString());
+                    if(tarihOnce(asgariUcret.getBaslangicTarih(), istirahatBitisTarih)){
+                        //TODO: istirahat bitiş tarihinden başlayarak rapor tarihi yılının sonuna kadar günlük net asgari ücret toplamını bul
+                        //aradaki günü bul. asgariucret/30 ile çarp. sonra tostring ile yazdır. 
+                        // aradaki günü set et setDays();
+
+                        if(asgariUcret.getBitisTarih().isBefore(yilSonu))
+                            yilSonu = asgariUcret.getBitisTarih();
+
+                        setDays(istirahatBitisTarih, yilSonu);
+                        logger.info("Tarih Başlangıç" + istirahatBitisTarih + " Tarih Bitiş: " + yilSonu + " GünxAsgariÜcret: " + this.days.intValue()+ " x " + asgariUcret.getAsgariUcretMiktar() + " Tazminat: " + asgariUcret.getAsgariUcretMiktar()/30*days.intValue() );    
+                    }
+                    else {
+                        //TODO: ilk tarih= asgari ücret başlangıc tarihi, son tarih rapor tarihinin sonu olmak üzere net asgari ücret toplamı bul
+                        
+                        if(asgariUcret.getBitisTarih().isBefore(yilSonu))
+                            yilSonu = asgariUcret.getBitisTarih();
+
+                        setDays(asgariUcret.getBaslangicTarih(), yilSonu);
+                        logger.info("Tarih Başlangıç" + asgariUcret.getBaslangicTarih() + " Tarih Bitiş: " + yilSonu + " GünxAsgariÜcret: " + this.days.intValue()+ " x " + asgariUcret.getAsgariUcretMiktar() + " Tazminat: " + asgariUcret.getAsgariUcretMiktar()/30*days.intValue() );
+                    }   
+                } 
+            );
+
     }
 
     private Period ikiTarihArasiHesap(TazminatRapor tazminatRapor)
     {
         LocalDate kazaTarihi = tazminatRapor.getTarihBilgileri().getKazaTarihi();
         LocalDate raporTarihiSonu = LocalDate.of(tazminatRapor.getTarihBilgileri().getRaporTarihi().getYear(), 12, 31);
-        Period period = Period.between(kazaTarihi, raporTarihiSonu);
-        String temp = "Yıl: " + period.getYears() + " Ay: " + period.getMonths() + " Gün: " + period.getDays();
+        
+        //Period period = Period.between(kazaTarihi, raporTarihiSonu);
+        //String temp = "Yıl: " + period.getYears() + " Ay: " + period.getMonths() + " Gün: " + period.getDays();
 
         return Period.between(kazaTarihi, raporTarihiSonu);
     }
 
-    private Double getAsgariUcretByDate(LocalDate tarih){
-        ZoneId defaultZoneId = ZoneId.systemDefault();
-
-        Date date = Date.from(tarih.atStartOfDay(defaultZoneId).toInstant());
-        return asgariUcretService.findAsgariUcretGivenDate(date).getAsgariUcretMiktar();
-    }
-
-    private Double istirahatOncesiDonemZarariHesapla(Double istirahaliGunSayisi, Double netAsgariUcret, EkBilgiler ekBilgiler)
+    private void setDays(LocalDate ilkTarih, LocalDate sonTarih)
     {
-        return istirahaliGunSayisi*netAsgariUcret/30*ekBilgiler.getMaluliyetOrani()/100*ekBilgiler.getDavaliKusurOrani()/100*1.975;
+        this.days = ChronoUnit.DAYS.between(ilkTarih, sonTarih);
     }
 
-    private void istirahatSonrasiZararHesapla(Date istirahatBitisTarih, Date raporTarih){
-        List<AsgariUcret> asgariUcretList = asgariUcretService.findAsgariUcretByDate(istirahatBitisTarih, raporTarih);
-
-        asgariUcretList.forEach((asgariUcret) -> {
-            if(tarihOnce(asgariUcret.getBaslangicTarih(), istirahatBitisTarih)){
-                //TODO: istirahat bitiş tarihinden başlayarak rapor tarihi yılının sonuna kadar günlük net asgari ücret toplamını bul
-                    //days = ChronoUnit.DAYS.between(asgariUcret.getBaslangicTarih().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.of(raporTarih.getYear(), 12, 31));
-
-            }
-            else {
-                //TODO: ilk tarih= asgari ücret başlangıc tarihi, son tarih rapor tarihinin sonu olmak üzere net asgari ücret toplamı bul
-
-            }   
-                } 
-            );
-
+    private boolean tarihOnce(LocalDate ilkTarih, LocalDate sonTarih){
+        return ilkTarih.isBefore(sonTarih);
     }
 
-    private boolean tarihOnce(Date ilkTarih, Date sonTarih){
-        return ilkTarih.getTime() > sonTarih.getTime() ? true : false;
+    private LocalDate endOfYear(LocalDate date){
+        return LocalDate.of(date.getYear(),12,31);
     }
 
 }
