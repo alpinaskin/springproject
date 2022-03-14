@@ -13,10 +13,8 @@ import com.example.tazminathesap.model.IstirahatSonrasiZarari;
 import com.example.tazminathesap.model.TazminatRapor;
 import com.example.tazminathesap.service.AsgariUcretService;
 import com.example.tazminathesap.service.GecmisDevreHesabiService;
-import com.example.tazminathesap.service.IstirahatSonrasiService;
 import com.example.tazminathesap.service.TazminatRaporService;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,14 +27,12 @@ public class GecmisDevreHesabiController extends BaseController<GecmisDevreHesab
 
     private final TazminatRaporService tazminatRaporService;
     private final AsgariUcretService asgariUcretService;
-    private final IstirahatSonrasiService istirahatSonrasiService;
     private Long days = 0L; 
 
-    protected GecmisDevreHesabiController(GecmisDevreHesabiService service, TazminatRaporService tazminatRaporService, AsgariUcretService asgariUcretService, IstirahatSonrasiService istirahatSonrasiService) {
+    protected GecmisDevreHesabiController(GecmisDevreHesabiService service, TazminatRaporService tazminatRaporService, AsgariUcretService asgariUcretService) {
         super(service);
         this.tazminatRaporService = tazminatRaporService;
         this.asgariUcretService = asgariUcretService;
-        this.istirahatSonrasiService = istirahatSonrasiService;
     }
 
     @GetMapping("/rapor/{id}")
@@ -48,24 +44,23 @@ public class GecmisDevreHesabiController extends BaseController<GecmisDevreHesab
         LocalDate kazaTarihi = tazminatRapor.getTarihBilgileri().getKazaTarihi();
         LocalDate raporTarihi = tazminatRapor.getTarihBilgileri().getRaporTarihi();
         
-        //TODO: Kazatarihiyılsonu notunu hesapla
+        Double asgariUcret = getAsgariUcretByDate(kazaTarihi);
+        Double toplamZarar = 0.;
 
+        //Kaza tarihi ve rapor yıl sonu arasındaki süreyi  hesapla
         gecmisDevreHesabi.setKazaTarihiRaporYiliSonu(ikiTarihArasiHesap(tazminatRapor));
 
-        //TODO: İstirahat dönem zararı hesapla
         //istirahat süresi x kaza tarihindeki asgari ücret net        
         setDays(kazaTarihi, istirahatBitisTarihi);
         
-        //kaza tarihindeki asgari ücret
-        Double asgariUcret = getAsgariUcretByDate(kazaTarihi);
-
+        //kaza tarihindeki asgari ücreti bul, istirahat öncesi zarari hesapla
         gecmisDevreHesabi.setIstirahatliDonemZarari(istirahatOncesiDonemZarariHesapla(this.days.doubleValue(), asgariUcret, tazminatRapor.getEkBilgiler()));
         
-        //TODO: İstirahat sonrası zararı hesapla
+        //İstirahat sonrası zararı hesapla
         gecmisDevreHesabi = istirahatSonrasiZararHesapla(gecmisDevreHesabi, istirahatBitisTarihi, raporTarihi);
         
-        //TODO: Geçmiş Devre zararı hesapla
-        Double toplamZarar = gecmisDevreHesabi.getIstirahatliDonemZarari();
+        //Toplam Geçmiş Devre zararı hesapla
+        toplamZarar = gecmisDevreHesabi.getIstirahatliDonemZarari();
         toplamZarar += gecmisDevreHesabi.getIstirahatSonrasiZarari().stream().mapToDouble(e -> e.getTazminatMiktar()).sum();
         //gecmisDevreHesabi.setGecmisDevreZarari(2500.0);
         
