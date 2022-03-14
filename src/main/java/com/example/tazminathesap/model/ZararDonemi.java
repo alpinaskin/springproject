@@ -3,7 +3,7 @@ package com.example.tazminathesap.model;
 import javax.persistence.Entity;
 
 @Entity
-public class ZararDonemi {
+public class ZararDonemi extends BaseEntity {
     String zararDonemi;
     Double donemZarar;
 
