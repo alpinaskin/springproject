@@ -44,6 +44,7 @@ public class DataLoader implements CommandLineRunner {
 		this.asgariUcretService = asgariUcretService;
 	}
 	
+	@Override
 	public void run(String... args) throws Exception {
 
 	
@@ -103,7 +104,6 @@ public class DataLoader implements CommandLineRunner {
 		ilkTarihBilgileri.setTazminatRapor(ilkTazminatRapor);
 		ilkEkBilgiler.setTazminatRapor(ilkTazminatRapor);
 		tazminatRaporService.save(ilkTazminatRapor);
-		
 		
 		System.out.println(ekBilgilerService.findAll());
 		System.out.println(raporBilgileriService.findAll());
