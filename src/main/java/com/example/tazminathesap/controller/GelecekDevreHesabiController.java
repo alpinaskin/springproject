@@ -1,7 +1,11 @@
 package com.example.tazminathesap.controller;
 
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 
+import static java.time.temporal.TemporalAdjusters.firstDayOfYear;
+
+import com.example.tazminathesap.model.AsgariUcret;
 import com.example.tazminathesap.model.GelecekDevreHesabi;
 import com.example.tazminathesap.model.TazminatRapor;
 import com.example.tazminathesap.service.AsgariUcretService;
@@ -30,12 +34,51 @@ public class GelecekDevreHesabiController extends BaseController<GelecekDevreHes
     @GetMapping("/rapor/{id}")
     public ResponseEntity<GelecekDevreHesabi> calcGelecekDevreHesabi(@PathVariable("id") Long id){
         TazminatRapor tazminatRapor = tazminatRaporService.findById(id);
-        tazminatRapor.getTarihBilgileri().getRaporTarihi();
-        
+        LocalDate dogumTarihi = tazminatRapor.getTarihBilgileri().getKazaliDogumTarihi();
+        LocalDate ucretTarihi = tazminatRapor.getTarihBilgileri().getUcretTarihi();
+        Double yevmiye = tazminatRapor.getUcretBilgileri().getGunlukCiplakYevmiye();
+        LocalDate raporTarihi = tazminatRapor.getTarihBilgileri().getRaporTarihi();
+        AsgariUcret asgariUcret = asgariUcretService.findAsgariUcretGivenDate(ucretTarihi);
+        LocalDate sonAktifCalismaTarih = getAktifCalismaTarih(dogumTarihi);
+        logger.info(asgariUcret + "   "  +  getLocalDateWithNextYear(raporTarihi));
+
+
+        gelecekDevreHesapla(getLocalDateWithNextYear(raporTarihi), sonAktifCalismaTarih);
+
+        /**
+         * Son yevmiyeyi bul
+         * Son yevmiye yılındaki asgari ücreti bul
+         * Rapor yılının sonrası yılı al
+         * Her yıl için günlük asgari net ücret*aradaki gün*asgari ücret ve yevmiye katı ile tazminat bul
+         * Son çalışma yaşı sonuna kadar hesapla
+         */
+
         return null;
     }
 
-    private LocalDate getLocalDateWithNextYear(){
-        return null;
+    private void gelecekDevreHesapla(LocalDate baslangic, LocalDate bitis){
+        //TODO: Gelecek devre raporu her yıl için hesapla
+        while(tarihOnce(baslangic, bitis)){
+            //TODO: İşlemler...
+            
+            if(!(baslangic.getYear() == bitis.getYear()))
+                logger.info(baslangic+" "+ baslangic.with(TemporalAdjusters.lastDayOfYear()));
+            else
+                logger.info(baslangic+" "+ bitis);
+            
+           baslangic = baslangic.plusYears(1);
+        }
+    }
+
+    private LocalDate getLocalDateWithNextYear(LocalDate raporTarihi){
+        return raporTarihi.plusDays(1);
+    }
+
+    private LocalDate getAktifCalismaTarih(LocalDate dogumTarihi){
+        return dogumTarihi.plusYears(60);
+    }
+
+    private boolean tarihOnce(LocalDate ilkTarih, LocalDate sonTarih){
+        return ilkTarih.isBefore(sonTarih);
     }
 }
