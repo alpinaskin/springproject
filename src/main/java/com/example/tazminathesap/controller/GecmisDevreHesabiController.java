@@ -3,21 +3,24 @@ package com.example.tazminathesap.controller;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.example.tazminathesap.model.AsgariUcret;
 import com.example.tazminathesap.model.EkBilgiler;
 import com.example.tazminathesap.model.GecmisDevreHesabi;
+import com.example.tazminathesap.model.IstirahatSonrasiZarari;
 import com.example.tazminathesap.model.TazminatRapor;
 import com.example.tazminathesap.service.AsgariUcretService;
 import com.example.tazminathesap.service.GecmisDevreHesabiService;
+import com.example.tazminathesap.service.IstirahatSonrasiService;
 import com.example.tazminathesap.service.TazminatRaporService;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -26,26 +29,28 @@ public class GecmisDevreHesabiController extends BaseController<GecmisDevreHesab
 
     private final TazminatRaporService tazminatRaporService;
     private final AsgariUcretService asgariUcretService;
+    private final IstirahatSonrasiService istirahatSonrasiService;
     private Long days = 0L; 
 
-    protected GecmisDevreHesabiController(GecmisDevreHesabiService service, TazminatRaporService tazminatRaporService, AsgariUcretService asgariUcretService) {
+    protected GecmisDevreHesabiController(GecmisDevreHesabiService service, TazminatRaporService tazminatRaporService, AsgariUcretService asgariUcretService, IstirahatSonrasiService istirahatSonrasiService) {
         super(service);
         this.tazminatRaporService = tazminatRaporService;
         this.asgariUcretService = asgariUcretService;
+        this.istirahatSonrasiService = istirahatSonrasiService;
     }
 
     @GetMapping("/rapor/{id}")
-    @ResponseBody
     public ResponseEntity<GecmisDevreHesabi> calcGecmisDevreHesabi(@PathVariable("id") Long id)
     {
         GecmisDevreHesabi gecmisDevreHesabi = new GecmisDevreHesabi();
-        //TODO: Kazatarihiyılsonu notunu hesapla
         TazminatRapor tazminatRapor = tazminatRaporService.findById(id);
         LocalDate istirahatBitisTarihi = tazminatRapor.getTarihBilgileri().getIstirahatBitisTarihi();
         LocalDate kazaTarihi = tazminatRapor.getTarihBilgileri().getKazaTarihi();
         LocalDate raporTarihi = tazminatRapor.getTarihBilgileri().getRaporTarihi();
-        Period period = ikiTarihArasiHesap(tazminatRapor);
-        gecmisDevreHesabi.setKazaTarihiRaporYiliSonu("Yıl: " + period.getYears() + " Ay: " + period.getMonths() + " Gün: " + period.getDays());
+        
+        //TODO: Kazatarihiyılsonu notunu hesapla
+
+        gecmisDevreHesabi.setKazaTarihiRaporYiliSonu(ikiTarihArasiHesap(tazminatRapor));
 
         //TODO: İstirahat dönem zararı hesapla
         //istirahat süresi x kaza tarihindeki asgari ücret net        
@@ -53,16 +58,18 @@ public class GecmisDevreHesabiController extends BaseController<GecmisDevreHesab
         
         //kaza tarihindeki asgari ücret
         Double asgariUcret = getAsgariUcretByDate(kazaTarihi);
-        logger.info("******            ASGARİ UCRET : " + asgariUcret);
-        logger.info("******            IstirahatDonemZarari:" + istirahatOncesiDonemZarariHesapla(this.days.doubleValue(), asgariUcret, tazminatRapor.getEkBilgiler()));
+
         gecmisDevreHesabi.setIstirahatliDonemZarari(istirahatOncesiDonemZarariHesapla(this.days.doubleValue(), asgariUcret, tazminatRapor.getEkBilgiler()));
-        //TODO: İstirahat sonrası zararı hesapla
-        //Date dat= Date.from(tazminatRapor.getTarihBilgileri().getIstirahatBitisTarihi().atStartOfDay(ZoneId.systemDefault()).toInstant());
-        //Date dat2 = Date.from(tazminatRapor.getTarihBilgileri().getRaporTarihi().atStartOfDay(ZoneId.systemDefault()).toInstant());
-        istirahatSonrasiZararHesapla(istirahatBitisTarihi, raporTarihi);
-        //TODO: Geçmiş Devre zararı hesapla
-        return null;
         
+        //TODO: İstirahat sonrası zararı hesapla
+        gecmisDevreHesabi = istirahatSonrasiZararHesapla(gecmisDevreHesabi, istirahatBitisTarihi, raporTarihi);
+        
+        //TODO: Geçmiş Devre zararı hesapla
+        Double toplamZarar = gecmisDevreHesabi.getIstirahatliDonemZarari();
+        toplamZarar += gecmisDevreHesabi.getIstirahatSonrasiZarari().stream().mapToDouble(e -> e.getTazminatMiktar()).sum();
+        //gecmisDevreHesabi.setGecmisDevreZarari(2500.0);
+        
+        return super.create(gecmisDevreHesabi);
     }
 
 
@@ -75,12 +82,12 @@ public class GecmisDevreHesabiController extends BaseController<GecmisDevreHesab
         return istirahatliGunSayisi*netAsgariUcret/30*ekBilgiler.getMaluliyetOrani()/100*ekBilgiler.getDavaliKusurOrani()/100*1.975;
     }
 
-    private void istirahatSonrasiZararHesapla(LocalDate istirahatBitisTarih, LocalDate raporTarih){
+    private GecmisDevreHesabi istirahatSonrasiZararHesapla(GecmisDevreHesabi gecmisDevreHesabi, LocalDate istirahatBitisTarih, LocalDate raporTarih){
+        List<IstirahatSonrasiZarari> istirahatSonrasiZarariList = new ArrayList<>();
         List<AsgariUcret> asgariUcretList = asgariUcretService.findAsgariUcretByDate(istirahatBitisTarih, raporTarih);
         asgariUcretList.forEach((asgariUcret) -> {
                     LocalDate yilSonu = endOfYear(asgariUcret.getBaslangicTarih());
 
-                    logger.info(istirahatBitisTarih.toString());
                     if(tarihOnce(asgariUcret.getBaslangicTarih(), istirahatBitisTarih)){
                         //TODO: istirahat bitiş tarihinden başlayarak rapor tarihi yılının sonuna kadar günlük net asgari ücret toplamını bul
                         //aradaki günü bul. asgariucret/30 ile çarp. sonra tostring ile yazdır. 
@@ -90,7 +97,7 @@ public class GecmisDevreHesabiController extends BaseController<GecmisDevreHesab
                             yilSonu = asgariUcret.getBitisTarih();
 
                         setDays(istirahatBitisTarih, yilSonu);
-                        logger.info("Tarih Başlangıç" + istirahatBitisTarih + " Tarih Bitiş: " + yilSonu + " GünxAsgariÜcret: " + this.days.intValue()+ " x " + asgariUcret.getAsgariUcretMiktar() + " Tazminat: " + asgariUcret.getAsgariUcretMiktar()/30*days.intValue() );    
+                        istirahatSonrasiZarariList.add(new IstirahatSonrasiZarari(asgariUcret.getAsgariUcretMiktar()/30*days.intValue(), "Tarih Başlangıç" + istirahatBitisTarih + " Tarih Bitiş: " + yilSonu + " GünxAsgariÜcret: " + this.days.intValue()+ " x " + asgariUcret.getAsgariUcretMiktar() + " Tazminat: " + asgariUcret.getAsgariUcretMiktar()/30*days.intValue(), gecmisDevreHesabi));
                     }
                     else {
                         //TODO: ilk tarih= asgari ücret başlangıc tarihi, son tarih rapor tarihinin sonu olmak üzere net asgari ücret toplamı bul
@@ -99,22 +106,27 @@ public class GecmisDevreHesabiController extends BaseController<GecmisDevreHesab
                             yilSonu = asgariUcret.getBitisTarih();
 
                         setDays(asgariUcret.getBaslangicTarih(), yilSonu);
-                        logger.info("Tarih Başlangıç" + asgariUcret.getBaslangicTarih() + " Tarih Bitiş: " + yilSonu + " GünxAsgariÜcret: " + this.days.intValue()+ " x " + asgariUcret.getAsgariUcretMiktar() + " Tazminat: " + asgariUcret.getAsgariUcretMiktar()/30*days.intValue() );
+                        istirahatSonrasiZarariList.add(new IstirahatSonrasiZarari(asgariUcret.getAsgariUcretMiktar()/30*days.intValue(), 
+                        "Tarih Başlangıç" + asgariUcret.getBaslangicTarih() + " Tarih Bitiş: " + yilSonu + " GünxAsgariÜcret: " + this.days.intValue()+ " x " + asgariUcret.getAsgariUcretMiktar() + " Tazminat: " + asgariUcret.getAsgariUcretMiktar()/30*days.intValue(), gecmisDevreHesabi));
                     }   
                 } 
             );
-
+            //istirahatSonrasiService.findAll().forEach((istirahatSonrasiZarari) -> gecmisDevreHesabi.getIstirahatSonrasiZarari().add(istirahatSonrasiZarari));
+            istirahatSonrasiZarariList.stream().forEach((e) -> gecmisDevreHesabi.getIstirahatSonrasiZarari().add(e));
+            
+            gecmisDevreHesabi.setGecmisDevreZarari(2500.0);
+            return gecmisDevreHesabi;
     }
 
-    private Period ikiTarihArasiHesap(TazminatRapor tazminatRapor)
+    private String ikiTarihArasiHesap(TazminatRapor tazminatRapor)
     {
         LocalDate kazaTarihi = tazminatRapor.getTarihBilgileri().getKazaTarihi();
         LocalDate raporTarihiSonu = LocalDate.of(tazminatRapor.getTarihBilgileri().getRaporTarihi().getYear(), 12, 31);
         
-        //Period period = Period.between(kazaTarihi, raporTarihiSonu);
-        //String temp = "Yıl: " + period.getYears() + " Ay: " + period.getMonths() + " Gün: " + period.getDays();
+        Period period = Period.between(kazaTarihi, raporTarihiSonu);
+        String temp = "Yıl: " + period.getYears() + " Ay: " + period.getMonths() + " Gün: " + period.getDays();
 
-        return Period.between(kazaTarihi, raporTarihiSonu);
+        return temp;
     }
 
     private void setDays(LocalDate ilkTarih, LocalDate sonTarih)

@@ -1,15 +1,24 @@
 package com.example.tazminathesap.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 public class GecmisDevreHesabi extends BaseEntity{
     private String kazaTarihiRaporYiliSonu;
     private Double istirahatliDonemZarari;
-    private Double istirahatSonrasiZarari;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "gecmisDevreHesabi", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<IstirahatSonrasiZarari> istirahatSonrasiZarari = new ArrayList<>();
     private Double gecmisDevreZarari;
 
-    public GecmisDevreHesabi(String kazaTarihiRaporYiliSonu, Double istirahatliDonemZarari, Double istirahatSonrasiZarari, Double gecmisDevreZarari) {
+    public GecmisDevreHesabi(String kazaTarihiRaporYiliSonu, Double istirahatliDonemZarari, List<IstirahatSonrasiZarari> istirahatSonrasiZarari, Double gecmisDevreZarari) {
         this.kazaTarihiRaporYiliSonu = kazaTarihiRaporYiliSonu;
         this.istirahatliDonemZarari = istirahatliDonemZarari;
         this.istirahatSonrasiZarari = istirahatSonrasiZarari;
@@ -35,11 +44,11 @@ public class GecmisDevreHesabi extends BaseEntity{
         this.istirahatliDonemZarari = istirahatliDonemZarari;
     }
 
-    public Double getIstirahatSonrasiZarari() {
+    public List<IstirahatSonrasiZarari> getIstirahatSonrasiZarari() {
         return this.istirahatSonrasiZarari;
     }
 
-    public void setIstirahatSonrasiZarari(Double istirahatSonrasiZarari) {
+    public void setIstirahatSonrasiZarari(List<IstirahatSonrasiZarari> istirahatSonrasiZarari) {
         this.istirahatSonrasiZarari = istirahatSonrasiZarari;
     }
 
