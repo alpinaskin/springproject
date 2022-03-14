@@ -12,10 +12,5 @@ public class GecmisDevreHesabiServiceJPA extends AbstractJpaService<GecmisDevreH
     public GecmisDevreHesabiServiceJPA(GecmisDevreHesabiRepository repository) {
         super(repository);
     }
-
-    @Override
-    public GecmisDevreHesabi save(GecmisDevreHesabi gem){
-        return gem;
-    }
     
 }
