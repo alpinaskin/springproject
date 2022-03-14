@@ -1,11 +1,27 @@
 package com.example.tazminathesap.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
-public class ZararHesapTablosu {
+public class ZararHesapTablosu extends BaseEntity{
+    
+    @JsonManagedReference
+    @OneToOne(cascade= CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
+    @JoinColumn(name="gecmis_devre_hesabi_id")
     private GecmisDevreHesabi gecmisDevreHesabi;
+    @JsonManagedReference
+    @OneToOne(cascade= CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
+    @JoinColumn(name="gelecek_devre_hesabi_id")
     private GelecekDevreHesabi gelecekDevreHesabi;
+    @JsonManagedReference
+    @OneToOne(cascade= CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
+    @JoinColumn(name = "pasif_devre_hesabi_id")
     private PasifDevreHesabi pasifDevreHesabi;
     private Double geciciIsGoremezlikTutari;
     private Double sgkAylikPesinDegeri;
