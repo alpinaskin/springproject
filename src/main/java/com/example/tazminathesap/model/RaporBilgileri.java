@@ -6,7 +6,17 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 @Entity
 public class RaporBilgileri extends BaseEntity {
 	
@@ -22,9 +32,8 @@ public class RaporBilgileri extends BaseEntity {
 	@JoinColumn(name = "tazminat_id", nullable = true)
 	private TazminatRapor tazminatRapor;
 	
-	public RaporBilgileri(String davaliAdi, String davaciAdi, String davaciVekili, String bilirkisi,
-			String raporunDuzenlenecegiMakam, String esasNo) {
-		super();
+
+	public RaporBilgileri(String davaliAdi, String davaciAdi, String davaciVekili, String bilirkisi, String raporunDuzenlenecegiMakam, String esasNo) {
 		this.davaliAdi = davaliAdi;
 		this.davaciAdi = davaciAdi;
 		this.davaciVekili = davaciVekili;
@@ -32,55 +41,5 @@ public class RaporBilgileri extends BaseEntity {
 		this.raporunDuzenlenecegiMakam = raporunDuzenlenecegiMakam;
 		this.esasNo = esasNo;
 	}
-	public RaporBilgileri() {
-		super();
-	}
-	public String getDavaliAdi() {
-		return davaliAdi;
-	}
-	public void setDavaliAdi(String davaliAdi) {
-		this.davaliAdi = davaliAdi;
-	}
-	public String getDavaciAdi() {
-		return davaciAdi;
-	}
-	public void setDavaciAdi(String davaciAdi) {
-		this.davaciAdi = davaciAdi;
-	}
-	public String getDavaciVekili() {
-		return davaciVekili;
-	}
-	public void setDavaciVekili(String davaciVekili) {
-		this.davaciVekili = davaciVekili;
-	}
-	public String getBilirkisi() {
-		return bilirkisi;
-	}
-	public void setBilirkisi(String bilirkisi) {
-		this.bilirkisi = bilirkisi;
-	}
-	public String getRaporunDuzenlenecegiMakam() {
-		return raporunDuzenlenecegiMakam;
-	}
-	public void setRaporunDuzenlenecegiMakam(String raporunDuzenlenecegiMakam) {
-		this.raporunDuzenlenecegiMakam = raporunDuzenlenecegiMakam;
-	}
-	public String getEsasNo() {
-		return esasNo;
-	}
-	public void setEsasNo(String esasNo) {
-		this.esasNo = esasNo;
-	}
-	public void setTazminatRapor(TazminatRapor tazminatRapor) {
-		this.tazminatRapor = tazminatRapor;
-	}
-	public TazminatRapor getTazminatRapor() {
-		return this.tazminatRapor;
-	}
-	@Override
-	public String toString() {
-		return "RaporBilgileri [davaliAdi=" + davaliAdi + ", davaciAdi=" + davaciAdi + ", davaciVekili=" + davaciVekili
-				+ ", bilirkisi=" + bilirkisi + ", raporunDuzenlenecegiMakam=" + raporunDuzenlenecegiMakam + ", esasNo="
-				+ esasNo + "]";
-	}
+
 }

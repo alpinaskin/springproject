@@ -6,9 +6,17 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class MaddiTazminat extends BaseEntity {
-
 
     @OneToOne(cascade= CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
     @JoinColumn(name="tazminat_id")
@@ -24,48 +32,5 @@ public class MaddiTazminat extends BaseEntity {
     @OneToOne(cascade= CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
     @JoinColumn(name="pasif_devre_hesabi_id")
     private PasifDevreHesabi pasifDevreHesabi;
-
-
-    public MaddiTazminat(TazminatRapor tazminatRapor, GecmisDevreHesabi gecmisDevreHesabi, GelecekDevreHesabi gelecekDevreHesabi, PasifDevreHesabi pasifDevreHesabi) {
-        this.tazminatRapor = tazminatRapor;
-        this.gecmisDevreHesabi = gecmisDevreHesabi;
-        this.gelecekDevreHesabi = gelecekDevreHesabi;
-        this.pasifDevreHesabi = pasifDevreHesabi;
-    }
-
-    public MaddiTazminat() {
-    }
-
-    public TazminatRapor getTazminatRapor() {
-        return this.tazminatRapor;
-    }
-
-    public void setTazminatRapor(TazminatRapor tazminatRapor) {
-        this.tazminatRapor = tazminatRapor;
-    }
-
-    public GecmisDevreHesabi getGecmisDevreHesabi() {
-        return this.gecmisDevreHesabi;
-    }
-
-    public void setGecmisDevreHesabi(GecmisDevreHesabi gecmisDevreHesabi) {
-        this.gecmisDevreHesabi = gecmisDevreHesabi;
-    }
-
-    public GelecekDevreHesabi getGelecekDevreHesabi() {
-        return this.gelecekDevreHesabi;
-    }
-
-    public void setGelecekDevreHesabi(GelecekDevreHesabi gelecekDevreHesabi) {
-        this.gelecekDevreHesabi = gelecekDevreHesabi;
-    }
-
-    public PasifDevreHesabi getPasifDevreHesabi() {
-        return this.pasifDevreHesabi;
-    }
-
-    public void setPasifDevreHesabi(PasifDevreHesabi pasifDevreHesabi) {
-        this.pasifDevreHesabi = pasifDevreHesabi;
-    }
     
 }

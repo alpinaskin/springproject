@@ -7,50 +7,25 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 @Entity
 public class IstirahatSonrasiZarari extends BaseEntity{
+    private Double tazminatMiktar;
+    private String aciklama;
     @JsonBackReference
     @ManyToOne(cascade= CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
     @JoinColumn(name= "gecmisdevrehesabi_id", nullable = true)
     private GecmisDevreHesabi gecmisDevreHesabi;
-    private Double tazminatMiktar;
-    private String aciklama;
-
-    public IstirahatSonrasiZarari(Double tazminatMiktar, String aciklama, GecmisDevreHesabi gecmisDevreHesabi)
-    {
-        this.tazminatMiktar = tazminatMiktar;
-        this.aciklama = aciklama;
-        this.gecmisDevreHesabi = gecmisDevreHesabi;
-    }
-    public IstirahatSonrasiZarari() {
-
-    }
-    
-    public void setTazminatMiktar(Double tazminatMiktar)
-    {
-        this.tazminatMiktar = tazminatMiktar;
-    }
-
-    public void setAciklama(String aciklama){
-        this.aciklama = aciklama;
-    }
-
-    public Double getTazminatMiktar() {
-        return this.tazminatMiktar;
-    }
-
-    public String getAciklama() {
-        return this.aciklama;
-    }
-
-    public GecmisDevreHesabi getGecmisDevreHesabi() {
-        return this.gecmisDevreHesabi;
-    }
-
-    public void setGecmisDevreHesabi(GecmisDevreHesabi gecmisDevreHesabi) {
-        this.gecmisDevreHesabi = gecmisDevreHesabi;
-    }
 
 
 }
