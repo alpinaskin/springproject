@@ -1,7 +1,6 @@
 package com.example.tazminathesap.service.jpa;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +11,16 @@ import com.example.tazminathesap.model.TazminatRapor;
 import com.example.tazminathesap.model.ZararDonemi;
 import com.example.tazminathesap.repository.GelecekDevreHesabiRepository;
 import com.example.tazminathesap.service.GelecekDevreHesabiService;
+import com.example.tazminathesap.util.RaporFormatHelper;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class GelecekDevreHesabiServiceJPA extends AbstractJpaService<GelecekDevreHesabi, GelecekDevreHesabiRepository> implements GelecekDevreHesabiService {
+
+    @Autowired
+    RaporFormatHelper helper;
 
     public GelecekDevreHesabiServiceJPA(GelecekDevreHesabiRepository repository) {
         super(repository);
@@ -27,7 +31,7 @@ public class GelecekDevreHesabiServiceJPA extends AbstractJpaService<GelecekDevr
     {   
         LocalDate dogumTarihi = tazminatRapor.getTarihBilgileri().getKazaliDogumTarihi();
         LocalDate raporTarihi = tazminatRapor.getTarihBilgileri().getRaporTarihi();
-        LocalDate sonAktifCalismaTarihi = getAktifCalismaTarih(dogumTarihi);
+        LocalDate sonAktifCalismaTarihi = helper.getAktifCalismaTarih(dogumTarihi);
         Double yevmiye = tazminatRapor.getUcretBilgileri().getGunlukCiplakYevmiye();
         Double asgariUcretMiktar = asgariUcret.getAsgariUcretMiktar();
         Double zararToplam = 0.;
@@ -35,7 +39,7 @@ public class GelecekDevreHesabiServiceJPA extends AbstractJpaService<GelecekDevr
         GelecekDevreHesabi gelecekDevreHesabi = new GelecekDevreHesabi();
  
 
-        gelecekDevreHesabi.setZararDonemleri(zararDonemleriHesapla(getLocalDateWithNextYear(raporTarihi), sonAktifCalismaTarihi, asgariUcretMiktar, yevmiye));        
+        gelecekDevreHesabi.setZararDonemleri(zararDonemleriHesapla(helper.getSonrakiYilinBasi(raporTarihi), sonAktifCalismaTarihi, asgariUcretMiktar, yevmiye));        
         zararToplam = gelecekDevreHesabi.getZararDonemleri().stream().mapToDouble((e) -> e.getDonemZarar()).sum();
         gelecekDevreHesabi.setAktifDevreToplami(zararToplam);
 
@@ -46,20 +50,20 @@ public class GelecekDevreHesabiServiceJPA extends AbstractJpaService<GelecekDevr
         List<ZararDonemi> zararDonemleriTemp = new ArrayList<>();
         ZararDonemi zararDonemi;
 
-        while(tarihOnce(baslangic, bitis)){
+        while(helper.tarihOnce(baslangic, bitis)){
             //TODO: İşlemler...
             
             if(!(baslangic.getYear() == bitis.getYear()))
             {
                 zararDonemi = new ZararDonemi();
                 zararDonemi.setAciklama(baslangic+" "+ baslangic.with(TemporalAdjusters.lastDayOfYear()));
-                zararDonemi.setDonemZarar(asgariUcretMiktar*aradakiGun(baslangic, baslangic.with(TemporalAdjusters.lastDayOfYear()))*(yevmiye/asgariUcretMiktar));
+                zararDonemi.setDonemZarar(asgariUcretMiktar*helper.getIkiTarihArasindakiGun(baslangic, baslangic.with(TemporalAdjusters.lastDayOfYear()))*(yevmiye/asgariUcretMiktar));
                 zararDonemleriTemp.add(zararDonemi);
             }else
             {
                 zararDonemi = new ZararDonemi();
                 zararDonemi.setAciklama(baslangic+" "+ bitis);
-                zararDonemi.setDonemZarar(asgariUcretMiktar*aradakiGun(baslangic, bitis)*(yevmiye/asgariUcretMiktar));
+                zararDonemi.setDonemZarar(asgariUcretMiktar*helper.getIkiTarihArasindakiGun(baslangic, bitis)*(yevmiye/asgariUcretMiktar));
                 zararDonemleriTemp.add(zararDonemi);
             }
 
@@ -68,22 +72,4 @@ public class GelecekDevreHesabiServiceJPA extends AbstractJpaService<GelecekDevr
 
         return zararDonemleriTemp;
     }
-
-    private LocalDate getLocalDateWithNextYear(LocalDate raporTarihi){
-        return LocalDate.of(raporTarihi.plusDays(1).getYear(), 1, 1);
-    }
-
-    private LocalDate getAktifCalismaTarih(LocalDate dogumTarihi){
-        return dogumTarihi.plusYears(60);
-    }
-
-    private boolean tarihOnce(LocalDate ilkTarih, LocalDate sonTarih){
-        return ilkTarih.isBefore(sonTarih);
-    }
-    private Integer aradakiGun(LocalDate ilkTarih, LocalDate sonTarih){
-
-        Long days = ChronoUnit.DAYS.between(ilkTarih, sonTarih);
-        return days.intValue();
-    }
-    
 }
