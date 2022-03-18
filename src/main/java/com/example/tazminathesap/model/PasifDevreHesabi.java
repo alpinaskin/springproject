@@ -1,5 +1,7 @@
 package com.example.tazminathesap.model;
 
+import java.time.LocalDate;
+
 import javax.persistence.Entity;
 
 import lombok.AllArgsConstructor;
@@ -14,7 +16,8 @@ import lombok.Setter;
 @Entity
 public class PasifDevreHesabi extends BaseEntity{
     //Aktif Çalışma yaşı sonundan bakiye ömre kadar
-    private String bakiyeOmur;
+    private LocalDate sonCalismaTarihi;
+    private LocalDate bakiyeOmruTarihi;
     private Double brutZarar;
     private Double bugunkuZarar;
 

@@ -35,7 +35,6 @@ public class GelecekDevreHesabiServiceJPA extends AbstractJpaService<GelecekDevr
         Double yevmiye = tazminatRapor.getUcretBilgileri().getGunlukCiplakYevmiye();
         Double asgariUcretMiktar = asgariUcret.getAsgariUcretMiktar();
         Double zararToplam = 0.;
-        //TODO: Gelecek devre raporu her yıl için hesapla
         GelecekDevreHesabi gelecekDevreHesabi = new GelecekDevreHesabi();
  
 
@@ -51,18 +50,19 @@ public class GelecekDevreHesabiServiceJPA extends AbstractJpaService<GelecekDevr
         ZararDonemi zararDonemi;
 
         while(helper.tarihOnce(baslangic, bitis)){
-            //TODO: İşlemler...
-            
+
             if(!(baslangic.getYear() == bitis.getYear()))
             {
                 zararDonemi = new ZararDonemi();
-                zararDonemi.setZararDonemi(baslangic+" "+ baslangic.with(TemporalAdjusters.lastDayOfYear()));
+                zararDonemi.setDonemBaslangicTarihi(baslangic);
+                zararDonemi.setDonemBitisTarihi(baslangic.with(TemporalAdjusters.lastDayOfYear()));
                 zararDonemi.setDonemZarar(asgariUcretMiktar*helper.getIkiTarihArasindakiGun(baslangic, baslangic.with(TemporalAdjusters.lastDayOfYear()))*(yevmiye/asgariUcretMiktar));
                 zararDonemleriTemp.add(zararDonemi);
             }else
             {
                 zararDonemi = new ZararDonemi();
-                zararDonemi.setZararDonemi(baslangic+" "+ bitis);
+                zararDonemi.setDonemBaslangicTarihi(baslangic);
+                zararDonemi.setDonemBitisTarihi(bitis);
                 zararDonemi.setDonemZarar(asgariUcretMiktar*helper.getIkiTarihArasindakiGun(baslangic, bitis)*(yevmiye/asgariUcretMiktar));
                 zararDonemleriTemp.add(zararDonemi);
             }
