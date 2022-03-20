@@ -6,5 +6,5 @@ import com.example.tazminathesap.model.TazminatRapor;
 
 public interface PasifDevreHesabiService extends CrudService<PasifDevreHesabi> {
  
-    public PasifDevreHesabi savePasifDevreHesabi(TazminatRapor tazminatRapor, AsgariUcret asgariUcret);
+    public PasifDevreHesabi createPasifDevreHesabiByTazminatIdAndAsgariUcret(TazminatRapor tazminatRapor, AsgariUcret asgariUcret);
 }

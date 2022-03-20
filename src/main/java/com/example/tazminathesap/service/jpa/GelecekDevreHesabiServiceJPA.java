@@ -1,5 +1,6 @@
 package com.example.tazminathesap.service.jpa;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
@@ -33,19 +34,18 @@ public class GelecekDevreHesabiServiceJPA extends AbstractJpaService<GelecekDevr
         LocalDate raporTarihi = tazminatRapor.getTarihBilgileri().getRaporTarihi();
         LocalDate sonAktifCalismaTarihi = helper.getAktifCalismaTarih(dogumTarihi);
         Double yevmiye = tazminatRapor.getUcretBilgileri().getGunlukCiplakYevmiye();
-        Double asgariUcretMiktar = asgariUcret.getAsgariUcretMiktar();
-        Double zararToplam = 0.;
+        BigDecimal asgariUcretMiktar = asgariUcret.getAsgariUcretMiktar();
         GelecekDevreHesabi gelecekDevreHesabi = new GelecekDevreHesabi();
  
 
         gelecekDevreHesabi.setZararDonemleri(zararDonemleriHesapla(helper.getSonrakiYilinBasi(raporTarihi), sonAktifCalismaTarihi, asgariUcretMiktar, yevmiye));        
-        zararToplam = gelecekDevreHesabi.getZararDonemleri().stream().mapToDouble((e) -> e.getDonemZarar()).sum();
+        BigDecimal zararToplam = gelecekDevreHesabi.getZararDonemleri().stream().map(e -> e.getDonemZarar()).reduce(BigDecimal.ZERO, BigDecimal::add);
         gelecekDevreHesabi.setAktifDevreToplami(zararToplam);
 
         return gelecekDevreHesabi;
     }
 
-    private List<ZararDonemi> zararDonemleriHesapla(LocalDate baslangic, LocalDate bitis, Double asgariUcretMiktar, Double yevmiye) {
+    private List<ZararDonemi> zararDonemleriHesapla(LocalDate baslangic, LocalDate bitis, BigDecimal asgariUcretMiktar, Double yevmiye) {
         List<ZararDonemi> zararDonemleriTemp = new ArrayList<>();
         ZararDonemi zararDonemi;
 
@@ -53,17 +53,25 @@ public class GelecekDevreHesabiServiceJPA extends AbstractJpaService<GelecekDevr
 
             if(!(baslangic.getYear() == bitis.getYear()))
             {
+//asgariUcretMiktar*helper.getIkiTarihArasindakiGun(baslangic, baslangic.with(TemporalAdjusters.lastDayOfYear()))*(yevmiye/asgariUcretMiktar)
+                
+                BigDecimal netToplam = asgariUcretMiktar.multiply(new BigDecimal(yevmiye/asgariUcretMiktar.doubleValue()))
+                    .multiply(new BigDecimal(helper.getIkiTarihArasindakiGun(baslangic, baslangic.with(TemporalAdjusters.lastDayOfYear()))));
+
                 zararDonemi = new ZararDonemi();
                 zararDonemi.setDonemBaslangicTarihi(baslangic);
                 zararDonemi.setDonemBitisTarihi(baslangic.with(TemporalAdjusters.lastDayOfYear()));
-                zararDonemi.setDonemZarar(asgariUcretMiktar*helper.getIkiTarihArasindakiGun(baslangic, baslangic.with(TemporalAdjusters.lastDayOfYear()))*(yevmiye/asgariUcretMiktar));
+                zararDonemi.setDonemZarar(netToplam);
                 zararDonemleriTemp.add(zararDonemi);
             }else
             {
+                BigDecimal netToplam = asgariUcretMiktar.multiply(new BigDecimal(yevmiye/asgariUcretMiktar.doubleValue()))
+                .multiply(new BigDecimal(helper.getIkiTarihArasindakiGun(baslangic, bitis)));
+
                 zararDonemi = new ZararDonemi();
                 zararDonemi.setDonemBaslangicTarihi(baslangic);
                 zararDonemi.setDonemBitisTarihi(bitis);
-                zararDonemi.setDonemZarar(asgariUcretMiktar*helper.getIkiTarihArasindakiGun(baslangic, bitis)*(yevmiye/asgariUcretMiktar));
+                zararDonemi.setDonemZarar(netToplam);
                 zararDonemleriTemp.add(zararDonemi);
             }
 

@@ -1,5 +1,6 @@
 package com.example.tazminathesap.bootstrap;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import com.example.tazminathesap.model.AsgariUcret;
@@ -50,114 +51,114 @@ public class DataLoader implements CommandLineRunner {
 		asgariUcretService.save(new AsgariUcret(
 			LocalDate.of(2010,1,1),
 			LocalDate.of(2010,6,30),
-			729.
+			new BigDecimal(729)
 			));
 
 		asgariUcretService.save(new AsgariUcret(
 			LocalDate.of(2010,7,1),
 			LocalDate.of(2010,12,31),
-			760.50
+			new BigDecimal(760.50)
 			));
 	
 		asgariUcretService.save(new AsgariUcret(
 			LocalDate.of(2011,1,1),
 			LocalDate.of(2011,6,30),
-			796.50
+			new BigDecimal(796.50)
 			));
 		
 		asgariUcretService.save(new AsgariUcret(
 			LocalDate.of(2011,7,1),
 			LocalDate.of(2011,12,31),
-			837.
+			new BigDecimal(837)
 			));
 					
 		asgariUcretService.save(new AsgariUcret(
 			LocalDate.of(2012,1,1),
 			LocalDate.of(2012,6,30),
-			886.50
+			new BigDecimal(886.50)
 			));
 			
 		asgariUcretService.save(new AsgariUcret(
 			LocalDate.of(2012,7,1),
 			LocalDate.of(2012,12,31),
-			940.50
+			new BigDecimal(940.50)
 			));
 		
 		asgariUcretService.save(new AsgariUcret(
 			LocalDate.of(2013,1,1),
 			LocalDate.of(2013,6,30),
-			978.60
+			new BigDecimal(978.60)
 			));
 				
 		asgariUcretService.save(new AsgariUcret(
 			LocalDate.of(2013,7,1),
 			LocalDate.of(2013,12,31),
-			1021.50
+			new BigDecimal(1021.50)
 			));
 
 		asgariUcretService.save(new AsgariUcret(
 			LocalDate.of(2014,1,1),
 			LocalDate.of(2014,6,30),
-			1071.
+			new BigDecimal(1071)
 			));
 
 		asgariUcretService.save(new AsgariUcret(
 			LocalDate.of(2014,7,1),
 			LocalDate.of(2014,12,31),
-			1134.
+			new BigDecimal(1134)
 			));
 
 		asgariUcretService.save(new AsgariUcret(
 			LocalDate.of(2015,1,1),
 			LocalDate.of(2015,6,30),
-			1201.50
+			new BigDecimal(1201.50)
 			));
 
 		asgariUcretService.save(new AsgariUcret(
 			LocalDate.of(2015,7,1),
 			LocalDate.of(2015,12,31),
-			1273.50
+			new BigDecimal(1273.50)
 			));
 
 		asgariUcretService.save(new AsgariUcret(
 			LocalDate.of(2016,1,1),
 			LocalDate.of(2016,12,31),
-			1647.
+			new BigDecimal(1647)
 			));
 
 		asgariUcretService.save(new AsgariUcret(
 			LocalDate.of(2017,1,1),
 			LocalDate.of(2017,12,31),
-			1775.50
+			new BigDecimal(1775.50)
 			));
 
 		asgariUcretService.save(new AsgariUcret(
 			LocalDate.of(2018,1,1),
 			LocalDate.of(2018,12,31),
-			2029.50
+			new BigDecimal(2029.50)
 			));
 		asgariUcretService.save(new AsgariUcret(
 			LocalDate.of(2019,1,1),
 			LocalDate.of(2019,12,31),
-			2558.40
+			new BigDecimal(2558.40)
 			));
 		asgariUcretService.save(new AsgariUcret(
 			LocalDate.of(2020,1,1),
 			LocalDate.of(2020,12,31),
-			2943.
+			new BigDecimal(2943)
 			));
 		asgariUcretService.save(new AsgariUcret(
 			LocalDate.of(2021,1,1),
 			LocalDate.of(2021,12,31),
-			3557.5
+			new BigDecimal(3557.5)
 			));
 		asgariUcretService.save(new AsgariUcret(
 			LocalDate.of(2018,1,1),
 			LocalDate.of(2018,12,31),
-			5000.4
+			new BigDecimal(5000.4)
 			));
 
-		EkBilgiler ilkEkBilgiler = ekBilgilerService.save(new EkBilgiler(54,45,100.0,250.0,12500.0,true,2,true,true));
+		EkBilgiler ilkEkBilgiler = ekBilgilerService.save(new EkBilgiler(0.54,0.45,100.0,250.0,12500.0,true,2,true,true));
 		
 		RaporBilgileri ilkRaporBilgisi = raporBilgileriService.save(new RaporBilgileri("Ali","Ahmet","Mehmet","Hüdaverdi","Ankara Asliye Ceza","2012/76"));
 	

@@ -63,7 +63,7 @@ public class MaddiTazminatController extends BaseController<MaddiTazminat, Maddi
 
         GecmisDevreHesabi gecmisDevreHesabi = gecmisDevreHesabiService.saveGecmisDevreHesabi(tazminatRapor, asgariUcretKazaTarihinde, asgariUcretList);
         GelecekDevreHesabi gelecekDevreHesabi = gelecekDevreHesabiService.saveGelecekDevreHesabi(tazminatRapor, asgariUcretSonUcretTarihinde);
-        PasifDevreHesabi pasifDevreHesabi = pasifDevreHesabiService.savePasifDevreHesabi(tazminatRapor, asgariUcretRaporTarihinde);
+        PasifDevreHesabi pasifDevreHesabi = pasifDevreHesabiService.createPasifDevreHesabiByTazminatIdAndAsgariUcret(tazminatRapor, asgariUcretRaporTarihinde);
 
         return super.create(new MaddiTazminat(tazminatRapor, gecmisDevreHesabi, gelecekDevreHesabi, pasifDevreHesabi));
     }

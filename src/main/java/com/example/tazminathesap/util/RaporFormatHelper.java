@@ -1,5 +1,6 @@
 package com.example.tazminathesap.util;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class RaporFormatHelper {
-    
+    private static Integer AYDAKI_GUN_SAYISI = 30;
     private Long days = 0L;
 
     public void setDays(LocalDate ilkTarih, LocalDate sonTarih)
@@ -55,4 +56,9 @@ public class RaporFormatHelper {
     public LocalDate getYilSonu(LocalDate date){
         return LocalDate.of(date.getYear(),12,31);
     }
+
+    public BigDecimal getGunlukAsgariUcret(BigDecimal asgariUcret){
+        return asgariUcret.divide(new BigDecimal(AYDAKI_GUN_SAYISI));
+    }
+
 }

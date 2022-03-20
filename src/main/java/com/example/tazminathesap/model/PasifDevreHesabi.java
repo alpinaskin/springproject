@@ -1,5 +1,6 @@
 package com.example.tazminathesap.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import javax.persistence.Entity;
@@ -18,7 +19,7 @@ public class PasifDevreHesabi extends BaseEntity{
     //Aktif Çalışma yaşı sonundan bakiye ömre kadar
     private LocalDate sonCalismaTarihi;
     private LocalDate bakiyeOmruTarihi;
-    private Double brutZarar;
-    private Double bugunkuZarar;
+    private BigDecimal brutZarar;
+    private BigDecimal bugunkuZarar;
 
 }

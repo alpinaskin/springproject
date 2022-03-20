@@ -1,5 +1,6 @@
 package com.example.tazminathesap.model;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -21,7 +22,7 @@ import lombok.ToString;
 @Entity
 public class GelecekDevreHesabi extends BaseEntity{
     
-    private Double aktifDevreToplami;
+    private BigDecimal aktifDevreToplami;
     @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval = true )
     @JoinColumn(name = "gelecek_devre_hesabi_id")
     private List<ZararDonemi> zararDonemleri;

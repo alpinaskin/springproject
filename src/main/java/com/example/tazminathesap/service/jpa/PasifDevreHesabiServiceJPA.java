@@ -1,7 +1,10 @@
 package com.example.tazminathesap.service.jpa;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Optional;
 
+import com.example.tazminathesap.exception.ObjectNotCreatedException;
 import com.example.tazminathesap.model.AsgariUcret;
 import com.example.tazminathesap.model.PasifDevreHesabi;
 import com.example.tazminathesap.model.TazminatRapor;
@@ -15,6 +18,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class PasifDevreHesabiServiceJPA extends AbstractJpaService<PasifDevreHesabi, PasifDevreHesabiRepository> implements PasifDevreHesabiService {
 
+    private final BigDecimal AYDAKI_GUN = new BigDecimal("30");
+
     @Autowired
     RaporFormatHelper helper;
 
@@ -22,23 +27,23 @@ public class PasifDevreHesabiServiceJPA extends AbstractJpaService<PasifDevreHes
         super(repository);
     }
 
-    public PasifDevreHesabi savePasifDevreHesabi(TazminatRapor tazminatRapor, AsgariUcret asgariUcret){
-        Double kusurOrani = tazminatRapor.getEkBilgiler().getDavaliKusurOrani().doubleValue();
-        Double maluliyet = tazminatRapor.getEkBilgiler().getDavaliKusurOrani().doubleValue();
+    public PasifDevreHesabi createPasifDevreHesabiByTazminatIdAndAsgariUcret(TazminatRapor tazminatRapor, AsgariUcret asgariUcret){
+
+        Optional.of(tazminatRapor).orElseThrow(() -> new ObjectNotCreatedException("Tazminat Rapor null oluşturulamadı!"));        
+        
+        Double kusurOrani = tazminatRapor.getEkBilgiler().getDavaliKusurOrani();
+        Double maluliyet = tazminatRapor.getEkBilgiler().getDavaliKusurOrani();
         LocalDate dogumTarihi = tazminatRapor.getTarihBilgileri().getKazaliDogumTarihi();
 
-        LocalDate sonAktifCalismaTarihi = helper.getAktifCalismaTarih(dogumTarihi);//getAktifCalismaTarih(tazminatRapor.getTarihBilgileri().getKazaliDogumTarihi());
+        LocalDate sonAktifCalismaTarihi = helper.getAktifCalismaTarih(dogumTarihi);
         LocalDate bakiyeTarih = sonAktifCalismaTarihi.plusYears(9);
-        Integer bakiyeOmruArasiGun = helper.getIkiTarihArasindakiGun(sonAktifCalismaTarihi, bakiyeTarih); //aradakiGun(sonAktifCalismaTarihi, bakiyeTarih);
-        
-        PasifDevreHesabi pasifDevreHesabi = new PasifDevreHesabi();
-        Double pasifGelir = 0.;
-        
-        pasifGelir = (asgariUcret.getAsgariUcretMiktar()/30*kusurOrani/100*maluliyet/100)*bakiyeOmruArasiGun;
+        Integer bakiyeOmruArasiGun = helper.getIkiTarihArasindakiGun(sonAktifCalismaTarihi, bakiyeTarih);
 
-        pasifDevreHesabi.setBugunkuZarar(pasifGelir);
-        pasifDevreHesabi.setBakiyeOmur(sonAktifCalismaTarihi + " " + bakiyeTarih + " (" + bakiyeOmruArasiGun + " gün)");
-
-        return pasifDevreHesabi; 
+        BigDecimal pasifGelir = asgariUcret.getAsgariUcretMiktar()
+            .divide(AYDAKI_GUN)
+            .multiply(new BigDecimal(kusurOrani*maluliyet*bakiyeOmruArasiGun)); 
+    
+        return Optional.of(new PasifDevreHesabi(sonAktifCalismaTarihi, bakiyeTarih, null, pasifGelir))
+            .orElseThrow(() -> new ObjectNotCreatedException("Pasif Devre Hesabı oluşturulamadı"));
     }
 }

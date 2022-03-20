@@ -1,5 +1,6 @@
 package com.example.tazminathesap.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import javax.persistence.Entity;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,6 @@ public class AsgariUcret extends BaseEntity {
 	
 	private LocalDate baslangicTarih;
 	private LocalDate bitisTarih;
-	private Double asgariUcretMiktar;
+	private BigDecimal asgariUcretMiktar;
 
 }

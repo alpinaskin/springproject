@@ -1,5 +1,7 @@
 package com.example.tazminathesap.model;
 
+import java.math.BigDecimal;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -20,12 +22,10 @@ import lombok.ToString;
 @ToString
 @Entity
 public class IstirahatSonrasiZarari extends BaseEntity{
-    private Double tazminatMiktar;
+    private BigDecimal tazminatMiktar;
     private String aciklama;
     @JsonBackReference
     @ManyToOne(cascade= CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
     @JoinColumn(name= "gecmisdevrehesabi_id", nullable = true)
     private GecmisDevreHesabi gecmisDevreHesabi;
-
-
 }

@@ -1,5 +1,6 @@
 package com.example.tazminathesap.model;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,10 +23,10 @@ import lombok.ToString;
 @Entity
 public class GecmisDevreHesabi extends BaseEntity{
     private String kazaTarihiRaporYiliSonu;
-    private Double istirahatliDonemZarari;
+    private BigDecimal istirahatliDonemZarari;
     @JsonManagedReference
     @OneToMany(mappedBy = "gecmisDevreHesabi", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<IstirahatSonrasiZarari> istirahatSonrasiZarari = new ArrayList<>();
-    private Double gecmisDevreZarari;
+    private BigDecimal gecmisDevreZarari;
 
 }

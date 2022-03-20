@@ -20,8 +20,8 @@ import lombok.ToString;
 @Entity
 public class EkBilgiler extends BaseEntity {
 
-	private Integer davaliKusurOrani; //0-100
-	private Integer maluliyetOrani; // 0-100
+	private Double davaliKusurOrani; //0-1 arası
+	private Double maluliyetOrani; // 0-1 arası
 	private Double sgkAyligiPesinDegeri;
 	private Double geciciIsGoremezlikTutari;
 	private Double maddiTazminatIstek;
@@ -35,7 +35,7 @@ public class EkBilgiler extends BaseEntity {
 	private TazminatRapor tazminatRapor;
 
 
-	public EkBilgiler(Integer davaliKusurOrani, Integer maluliyetOrani, Double sgkAyligiPesinDegeri, Double geciciIsGoremezlikTutari, Double maddiTazminatIstek, Boolean kazaliCinsiyet, Integer kazalininCocukSayisi, Boolean kazalininMedeniHali, Boolean kazalininEsiCalisiyor) {
+	public EkBilgiler(Double davaliKusurOrani, Double maluliyetOrani, Double sgkAyligiPesinDegeri, Double geciciIsGoremezlikTutari, Double maddiTazminatIstek, Boolean kazaliCinsiyet, Integer kazalininCocukSayisi, Boolean kazalininMedeniHali, Boolean kazalininEsiCalisiyor) {
 		this.davaliKusurOrani = davaliKusurOrani;
 		this.maluliyetOrani = maluliyetOrani;
 		this.sgkAyligiPesinDegeri = sgkAyligiPesinDegeri;

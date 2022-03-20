@@ -13,8 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
-//TODO: Create Logging
-
 public abstract class BaseController<E extends BaseEntity, S extends CrudService<E>> implements CommonController<E> {
    Logger logger = LoggerFactory.getLogger(BaseController.class); 
    private final S service;
