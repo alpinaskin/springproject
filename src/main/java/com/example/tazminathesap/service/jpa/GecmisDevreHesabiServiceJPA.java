@@ -2,7 +2,6 @@ package com.example.tazminathesap.service.jpa;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,8 +21,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class GecmisDevreHesabiServiceJPA extends AbstractJpaService<GecmisDevreHesabi, GecmisDevreHesabiRepository> implements GecmisDevreHesabiService{
-
-    private final BigDecimal AYDAKI_GUN_SAYISI = new BigDecimal(30);
     
     private final IstirahatOncesiService istirahatOncesiService;
     private final IstirahatSonrasiService istirahatSonrasiService;
@@ -69,13 +66,15 @@ public class GecmisDevreHesabiServiceJPA extends AbstractJpaService<GecmisDevreH
 
         List<IstirahatSonrasiZarari> istirahatSonrasiZarariList = asgariUcretList.stream()
                     .filter(asgariUcret -> asgariUcret.getBaslangicTarih().isBefore(istirahatBitisTarih))
-                    .map(asgariUcret -> new IstirahatSonrasiZarari(helper.getGunlukAsgariUcret(asgariUcret.getAsgariUcretMiktar()), "", gecmisDevreHesabi))
+                    .map(asgariUcret -> new IstirahatSonrasiZarari(helper.getGunlukAsgariUcret(asgariUcret.getAsgariUcretMiktar()).multiply(new BigDecimal(helper.getIkiTarihArasindakiGun(asgariUcret.getBaslangicTarih(),asgariUcret.getBitisTarih()))), "", gecmisDevreHesabi))
                     .collect(Collectors.toList());
 
-        asgariUcretList.stream()
+        List<IstirahatSonrasiZarari> istirahatSonrasiZarariList2 = asgariUcretList.stream()
             .filter(asgariUcret -> !(asgariUcret.getBaslangicTarih().isBefore(istirahatBitisTarih)))
-            .map(asgariUcret -> new IstirahatSonrasiZarari(helper.getGunlukAsgariUcret(asgariUcret.getAsgariUcretMiktar())," " , gecmisDevreHesabi))
-            .collect(Collectors.toList()).addAll(istirahatSonrasiZarariList);
+            .map(asgariUcret -> new IstirahatSonrasiZarari(helper.getGunlukAsgariUcret(asgariUcret.getAsgariUcretMiktar()).multiply(new BigDecimal(helper.getIkiTarihArasindakiGun(asgariUcret.getBaslangicTarih(),asgariUcret.getBitisTarih())))," " , gecmisDevreHesabi))
+            .collect(Collectors.toList());
+
+        istirahatSonrasiZarariList.addAll(istirahatSonrasiZarariList2);
             
         istirahatSonrasiZarariList.stream().forEach((e) -> gecmisDevreHesabi.getIstirahatSonrasiZarari().add(e));
 

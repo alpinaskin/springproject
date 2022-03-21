@@ -17,11 +17,13 @@ import com.example.tazminathesap.service.PasifDevreHesabiService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/madditazminat")
 public class MaddiTazminatController extends BaseController<MaddiTazminat, MaddiTazminatService> {
@@ -56,6 +58,7 @@ public class MaddiTazminatController extends BaseController<MaddiTazminat, Maddi
         AsgariUcret asgariUcretSonUcretTarihinde = asgariUcretService.findAsgariUcretGivenDate(ucretTarihi); //Gelecek Hesap için ücret tarihine göre asgari ücret
         AsgariUcret asgariUcretRaporTarihinde = asgariUcretService.findAsgariUcretGivenDate(raporTarihi); //Pasif Hesap için rapor tarihine göre asgari ücret
         List<AsgariUcret> asgariUcretList = asgariUcretService.findAsgariUcretByDate(istirahatBitisTarihi, raporTarihi);
+        //List<Object[]> obj = asgariUcretService.findByDefauult(1L);
         
         if(asgariUcretKazaTarihinde == null || asgariUcretSonUcretTarihinde == null || asgariUcretRaporTarihinde == null || asgariUcretList == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
