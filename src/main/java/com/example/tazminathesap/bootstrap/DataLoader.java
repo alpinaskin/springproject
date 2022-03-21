@@ -153,8 +153,8 @@ public class DataLoader implements CommandLineRunner {
 			new BigDecimal(3557.5)
 			));
 		asgariUcretService.save(new AsgariUcret(
-			LocalDate.of(2018,1,1),
-			LocalDate.of(2018,12,31),
+			LocalDate.of(2022,1,1),
+			LocalDate.of(2022,12,31),
 			new BigDecimal(5000.4)
 			));
 
