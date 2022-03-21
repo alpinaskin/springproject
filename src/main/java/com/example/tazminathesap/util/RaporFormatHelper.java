@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class RaporFormatHelper {
-    private static Integer AYDAKI_GUN_SAYISI = 30;
+    private final static Integer AYDAKI_GUN_SAYISI = 30;
     private Long days = 0L;
 
     public void setDays(LocalDate ilkTarih, LocalDate sonTarih)
@@ -58,7 +58,7 @@ public class RaporFormatHelper {
     }
 
     public BigDecimal getGunlukAsgariUcret(BigDecimal asgariUcret){
-        return asgariUcret.divide(new BigDecimal(AYDAKI_GUN_SAYISI));
+        return asgariUcret.divide(new BigDecimal(AYDAKI_GUN_SAYISI),2);
     }
 
 }
