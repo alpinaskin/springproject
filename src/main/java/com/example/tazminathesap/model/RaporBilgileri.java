@@ -23,6 +23,7 @@ public class RaporBilgileri extends BaseEntity {
 	private String davaliAdi;
 	private String davaciAdi;
 	private String davaciVekili;
+	private String davaliVekili;
 	private String bilirkisi;
 	private String raporunDuzenlenecegiMakam;
 	private String esasNo;
@@ -33,10 +34,11 @@ public class RaporBilgileri extends BaseEntity {
 	private TazminatRapor tazminatRapor;
 	
 
-	public RaporBilgileri(String davaliAdi, String davaciAdi, String davaciVekili, String bilirkisi, String raporunDuzenlenecegiMakam, String esasNo) {
+	public RaporBilgileri(String davaliAdi, String davaciAdi, String davaciVekili, String davaliVekili, String bilirkisi, String raporunDuzenlenecegiMakam, String esasNo) {
 		this.davaliAdi = davaliAdi;
 		this.davaciAdi = davaciAdi;
 		this.davaciVekili = davaciVekili;
+		this.davaliVekili = davaliVekili;
 		this.bilirkisi = bilirkisi;
 		this.raporunDuzenlenecegiMakam = raporunDuzenlenecegiMakam;
 		this.esasNo = esasNo;
