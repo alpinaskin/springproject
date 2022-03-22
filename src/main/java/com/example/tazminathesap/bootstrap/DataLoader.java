@@ -160,7 +160,7 @@ public class DataLoader implements CommandLineRunner {
 
 		EkBilgiler ilkEkBilgiler = ekBilgilerService.save(new EkBilgiler(0.54,0.45,100.0,250.0,12500.0,true,2,true,true));
 		
-		RaporBilgileri ilkRaporBilgisi = raporBilgileriService.save(new RaporBilgileri("Ali","Ahmet","Mehmet","Hüdaverdi","Ankara Asliye Ceza","2012/76"));
+		RaporBilgileri ilkRaporBilgisi = raporBilgileriService.save(new RaporBilgileri("Ali Çevik","Ahmet Tan","Av. Mehmet Çetin","Av.Hüdaverdi Yılmaz","Murat Alık" ,"Ankara Asliye Ceza","2012/76"));
 	
 		TarihBilgileri ilkTarihBilgileri = tarihBilgileriService.save(new TarihBilgileri(LocalDate.of(2013, 12, 31),
 				LocalDate.of(2009, 11, 5), 
