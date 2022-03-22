@@ -1,6 +1,7 @@
 package com.example.tazminathesap.util;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
@@ -58,7 +59,7 @@ public class RaporFormatHelper {
     }
 
     public BigDecimal getGunlukAsgariUcret(BigDecimal asgariUcret){
-        return asgariUcret.divide(new BigDecimal(AYDAKI_GUN_SAYISI),2);
+        return asgariUcret.divide(new BigDecimal(AYDAKI_GUN_SAYISI),3, RoundingMode.CEILING);
     }
 
 }
