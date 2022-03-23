@@ -38,8 +38,6 @@ public class RaporFormatHelperTest {
         BigDecimal asgariUcretToTest3 = util.getGunlukAsgariUcret(asgariUcret3);
         BigDecimal asgariUcretToTest4 = util.getGunlukAsgariUcret(asgariUcret4);
         
-        System.out.println(round(asgariUcretGunluk4,3));
-        System.out.println(asgariUcretToTest4.toString());
         //when
         Assert.isTrue(asgariUcretGunluk.equals(asgariUcretToTest.doubleValue()), "Eşit değil");
         Assert.isTrue(round(asgariUcretGunluk2,3).equals(asgariUcretToTest2.doubleValue()), "Eşit değil");
