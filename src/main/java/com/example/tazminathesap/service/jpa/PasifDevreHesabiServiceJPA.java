@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import com.example.tazminathesap.exception.ObjectNotCreatedException;
+import com.example.tazminathesap.exception.EntityNotCreatedException;
 import com.example.tazminathesap.model.AsgariUcret;
 import com.example.tazminathesap.model.PasifDevreHesabi;
 import com.example.tazminathesap.model.TazminatRapor;
@@ -31,7 +31,7 @@ public class PasifDevreHesabiServiceJPA extends AbstractJpaService<PasifDevreHes
 
     public PasifDevreHesabi createPasifDevreHesabiByTazminatIdAndAsgariUcret(TazminatRapor tazminatRapor, AsgariUcret asgariUcret){
 
-        Optional.of(tazminatRapor).orElseThrow(() -> new ObjectNotCreatedException("Tazminat Rapor null oluşturulamadı!"));        
+        Optional.of(tazminatRapor).orElseThrow(() -> new EntityNotCreatedException("Tazminat Rapor null oluşturulamadı!"));        
         
         Double kusurOrani = tazminatRapor.getEkBilgiler().getDavaliKusurOrani();
         Double maluliyet = tazminatRapor.getEkBilgiler().getDavaliKusurOrani();
@@ -45,6 +45,6 @@ public class PasifDevreHesabiServiceJPA extends AbstractJpaService<PasifDevreHes
         BigDecimal pasifGelir = new BigDecimal(asgariUcret.getGunlukAsgariUcret()*kusurOrani*maluliyet*bakiyeOmruArasiGun*(tazminatRapor.getUcretBilgileri().getYevmiye()/asgariUcret.getGunlukAsgariUcret()));
     
         return Optional.of(new PasifDevreHesabi(sonAktifCalismaTarihi, bakiyeTarih, null, pasifGelir))
-            .orElseThrow(() -> new ObjectNotCreatedException("Pasif Devre Hesabı oluşturulamadı"));
+            .orElseThrow(() -> new EntityNotCreatedException("Pasif Devre Hesabı oluşturulamadı"));
     }
 }

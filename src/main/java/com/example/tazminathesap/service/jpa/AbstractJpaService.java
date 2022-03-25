@@ -2,6 +2,7 @@ package com.example.tazminathesap.service.jpa;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -20,8 +21,8 @@ public abstract class AbstractJpaService<T extends BaseEntity, R extends JpaRepo
 		return new ArrayList<>(repository.findAll());
 	}
 	
-	public T findById(Long id) {
-		return repository.findById(id).orElse(null);
+	public Optional<T> findById(Long id) {
+		return repository.findById(id);
 	}
 	
 	public T save(T object)

@@ -1,11 +1,10 @@
 package com.example.tazminathesap.exception;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
 public class AlreadyExistException extends RuntimeException {
-
-    public AlreadyExistException(String message){
-        super(message);
-    }
-
-    public AlreadyExistException(){
-    }
+    private final String message;
 }

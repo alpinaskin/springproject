@@ -4,7 +4,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.example.tazminathesap.exception.NotFoundException;
@@ -49,7 +48,7 @@ public abstract class BaseController<E extends BaseEntity, S extends CrudService
 
    @Override
    public ResponseEntity<EntityModel<E>> fetchById(@PathVariable("id") Long id) {
-      E entity = Optional.of(service.findById(id)).orElseThrow(() -> new NotFoundException());
+      E entity = service.findById(id).orElseThrow(() -> new NotFoundException("Id numarası" + id + " olan model bulunamadı!"));
 
       return ResponseEntity.ok(assembler.toModel(entity));
    };
