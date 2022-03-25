@@ -1,7 +1,5 @@
 package com.example.tazminathesap.model;
 
-import java.time.LocalDate;
-
 import javax.persistence.Entity;
 
 import lombok.AllArgsConstructor;
@@ -15,7 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AgiTablo extends BaseEntity {
-    private LocalDate yil;
+    private Integer yil;
     private Integer cocukSayisi;
     private boolean esCalismaDurumu;
     private Double agiAylik;

@@ -7,9 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.tazminathesap.model.AsgariUcret;
+import com.example.tazminathesap.model.EkBilgiler;
 import com.example.tazminathesap.model.GelecekDevreHesabi;
 import com.example.tazminathesap.model.TazminatRapor;
 import com.example.tazminathesap.model.ZararDonemi;
+import com.example.tazminathesap.repository.AgiTabloRepository;
 import com.example.tazminathesap.repository.GelecekDevreHesabiRepository;
 import com.example.tazminathesap.service.GelecekDevreHesabiService;
 import com.example.tazminathesap.util.RaporFormatHelper;
@@ -23,20 +25,27 @@ public class GelecekDevreHesabiServiceJPA extends AbstractJpaService<GelecekDevr
     @Autowired
     RaporFormatHelper helper;
 
-    public GelecekDevreHesabiServiceJPA(GelecekDevreHesabiRepository repository) {
+    private final AgiTabloRepository agiRepository;
+
+    public GelecekDevreHesabiServiceJPA(GelecekDevreHesabiRepository repository, AgiTabloRepository agiRepository) {
         super(repository);
+        this.agiRepository = agiRepository;
     }
     
     @Override
     public GelecekDevreHesabi saveGelecekDevreHesabi(TazminatRapor tazminatRapor, AsgariUcret asgariUcret)
     {   
+        EkBilgiler ekBilgiler = tazminatRapor.getEkBilgiler();
         LocalDate dogumTarihi = tazminatRapor.getTarihBilgileri().getKazaliDogumTarihi();
         LocalDate raporTarihi = tazminatRapor.getTarihBilgileri().getRaporTarihi();
         LocalDate sonAktifCalismaTarihi = helper.getAktifCalismaTarih(dogumTarihi);
         Double yevmiye = tazminatRapor.getUcretBilgileri().getYevmiye();
         BigDecimal asgariUcretMiktar = asgariUcret.getAsgariUcretMiktar();
         GelecekDevreHesabi gelecekDevreHesabi = new GelecekDevreHesabi();
- 
+        Double agiMiktar = agiRepository.findAgiTabloByYilAndCocukSayisiAndEsCalismaDurumu(raporTarihi.getYear(), ekBilgiler.getKazalininCocukSayisi(), ekBilgiler.getKazalininEsiCalisiyor()).getAgiAylik();
+        
+        System.out.println(agiMiktar);
+        asgariUcretMiktar.add(new BigDecimal(agiMiktar));
 
         gelecekDevreHesabi.setZararDonemleri(zararDonemleriHesapla(helper.getSonrakiYilinBasi(raporTarihi), sonAktifCalismaTarihi, asgariUcretMiktar, yevmiye));        
         BigDecimal zararToplam = gelecekDevreHesabi.getZararDonemleri().stream().map(e -> e.getDonemZarar()).reduce(BigDecimal.ZERO, BigDecimal::add);
