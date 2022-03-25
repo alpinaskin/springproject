@@ -1,6 +1,6 @@
 package com.example.tazminathesap.controller;
 
-import java.util.Set;
+import java.util.List;
 
 import com.example.tazminathesap.model.BaseEntity;
 
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 public interface CommonController <E extends BaseEntity> {
     @GetMapping
-    ResponseEntity<Set<E>> fetchAll();
+    ResponseEntity<List<E>> fetchAll();
 
     @GetMapping("/{id}")
     ResponseEntity<E> fetchById(@PathVariable("id") Long id);

@@ -1,12 +1,12 @@
 package com.example.tazminathesap.service;
 
-import java.util.Set;
+import java.util.List;
 
 import com.example.tazminathesap.model.BaseEntity;
 
 public interface CrudService<T extends BaseEntity> {
 
-	Set<T> findAll();
+	List<T> findAll();
 	
 	T findById(Long id);
 	

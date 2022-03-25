@@ -1,20 +1,20 @@
 package com.example.tazminathesap.service.map;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.example.tazminathesap.model.BaseEntity;
 import com.example.tazminathesap.service.CrudService;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 public class AbstractMapService <T extends BaseEntity> implements CrudService<T> {
 	
 	protected final Map<Long, T> map = new HashMap<>();
 
 	@Override
-	public Set<T> findAll() {
-		return new HashSet<>(map.values());
+	public List<T> findAll() {
+		return new ArrayList<>(map.values());
 	}
 	@Override
 	public T findById(Long id) {

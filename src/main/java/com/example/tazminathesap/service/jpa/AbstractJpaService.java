@@ -1,7 +1,7 @@
 package com.example.tazminathesap.service.jpa;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -16,8 +16,8 @@ public abstract class AbstractJpaService<T extends BaseEntity, R extends JpaRepo
 		this.repository = repository;
 	}
 	
-	public Set<T> findAll() {
-		return new HashSet<>(repository.findAll());
+	public List<T> findAll() {
+		return new ArrayList<>(repository.findAll());
 	}
 	
 	public T findById(Long id) {
