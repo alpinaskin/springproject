@@ -17,7 +17,7 @@ public class RaporFormatHelper {
 
     public void setDays(LocalDate ilkTarih, LocalDate sonTarih)
     {
-        this.days = ChronoUnit.DAYS.between(ilkTarih, sonTarih);
+        this.days = ChronoUnit.DAYS.between(ilkTarih, sonTarih) + 1;
     }
     
     public Long getDays(){

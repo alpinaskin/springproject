@@ -105,57 +105,57 @@ public class DataLoader implements CommandLineRunner {
 		asgariUcretService.save(new AsgariUcret(
 			LocalDate.of(2014,7,1),
 			LocalDate.of(2014,12,31),
-			new BigDecimal(1134)
+			new BigDecimal(891.03)
 			));
 
 		asgariUcretService.save(new AsgariUcret(
 			LocalDate.of(2015,1,1),
 			LocalDate.of(2015,6,30),
-			new BigDecimal(1201.50)
+			new BigDecimal(949.07)
 			));
 
 		asgariUcretService.save(new AsgariUcret(
 			LocalDate.of(2015,7,1),
 			LocalDate.of(2015,12,31),
-			new BigDecimal(1273.50)
+			new BigDecimal(1000.54)
 			));
 
 		asgariUcretService.save(new AsgariUcret(
 			LocalDate.of(2016,1,1),
 			LocalDate.of(2016,12,31),
-			new BigDecimal(1647)
+			new BigDecimal(1300.99)
 			));
 
 		asgariUcretService.save(new AsgariUcret(
 			LocalDate.of(2017,1,1),
 			LocalDate.of(2017,12,31),
-			new BigDecimal(1775.50)
+			new BigDecimal(1404.06)
 			));
 
 		asgariUcretService.save(new AsgariUcret(
 			LocalDate.of(2018,1,1),
 			LocalDate.of(2018,12,31),
-			new BigDecimal(2029.50)
+			new BigDecimal(1603.12)
 			));
 		asgariUcretService.save(new AsgariUcret(
 			LocalDate.of(2019,1,1),
 			LocalDate.of(2019,12,31),
-			new BigDecimal(2558.40)
+			new BigDecimal(2020.9)
 			));
 		asgariUcretService.save(new AsgariUcret(
 			LocalDate.of(2020,1,1),
 			LocalDate.of(2020,12,31),
-			new BigDecimal(2943)
+			new BigDecimal(2324.71)
 			));
 		asgariUcretService.save(new AsgariUcret(
 			LocalDate.of(2021,1,1),
 			LocalDate.of(2021,12,31),
-			new BigDecimal(3557.5)
+			new BigDecimal(2825.9)
 			));
 		asgariUcretService.save(new AsgariUcret(
 			LocalDate.of(2022,1,1),
 			LocalDate.of(2022,12,31),
-			new BigDecimal(5000.4)
+			new BigDecimal(4253.4)
 			));
 
 		EkBilgiler ilkEkBilgiler = ekBilgilerService.save(new EkBilgiler(0.54,0.45,100.0,250.0,12500.0,true,2,true,true));
