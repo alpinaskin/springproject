@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/gecmisdevre")
+@RequestMapping("api/v1/gecmisdevre")
 public class GecmisDevreHesabiController extends BaseController<GecmisDevreHesabi, GecmisDevreHesabiService> {
 
-    protected GecmisDevreHesabiController(GecmisDevreHesabiService service) {
-        super(service);
+    protected GecmisDevreHesabiController(GecmisDevreHesabiService service, GenericModelAssembler<GecmisDevreHesabi> assembler) {
+        super(service, assembler);
     }
 }

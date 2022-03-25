@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/tarihbilgileri")
+@RequestMapping("api/v1/tarihbilgileri")
 public class TarihBilgileriController extends BaseController<TarihBilgileri, TarihBilgileriService> {
 
-	protected TarihBilgileriController(TarihBilgileriService service) {
-		super(service);
+	protected TarihBilgileriController(TarihBilgileriService service, GenericModelAssembler<TarihBilgileri> assembler) {
+		super(service, assembler);
 	}
 		
 }

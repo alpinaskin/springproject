@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/ekbilgiler")
+@RequestMapping("api/v1/ekbilgiler")
 public class EkBilgilerController extends BaseController<EkBilgiler, EkBilgilerService> {
 	
-	protected EkBilgilerController(EkBilgilerService service) {
-		super(service);
+	protected EkBilgilerController(EkBilgilerService service, GenericModelAssembler<EkBilgiler> assembler) {
+		super(service, assembler);
 	}
 }

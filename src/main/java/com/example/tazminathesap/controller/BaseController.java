@@ -1,14 +1,22 @@
 package com.example.tazminathesap.controller;
 
-import java.util.List;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import com.example.tazminathesap.exception.NotFoundException;
 import com.example.tazminathesap.model.BaseEntity;
 import com.example.tazminathesap.service.CrudService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,66 +26,50 @@ import org.springframework.web.bind.annotation.RequestBody;
 public abstract class BaseController<E extends BaseEntity, S extends CrudService<E>> implements CommonController<E> {
    Logger logger = LoggerFactory.getLogger(BaseController.class); 
    private final S service;
+   private final GenericModelAssembler<E> assembler;
 
-    @Autowired 
-    protected BaseController(S service)
-     {
-        this.service = service;
-     }
-
-   @Override
-   public ResponseEntity<List<E>> fetchAll() {
-      try {
-         if(service.findAll().isEmpty())
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-         
-         List<E> tempEntity = service.findAll();
-         logger.info("Bütün modeller sıralanıyor: "+ tempEntity.toString());
-         return new ResponseEntity<>((List<E>)tempEntity, HttpStatus.OK);
-         
-      } catch (Exception e) {
-         return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-      }     
+   @Autowired 
+   protected BaseController(S service, GenericModelAssembler<E> assembler)
+   {
+      this.service = service;
+      this.assembler = assembler;
    }
 
    @Override
-   public ResponseEntity<E> fetchById(@PathVariable("id") Long id) {
-      try {
-         E tempE = service.findById(id);
-         if(tempE == null)
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-         logger.info("Alınan model: " + tempE);
-         return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
-      } catch (Exception e) {
-         return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
+   public ResponseEntity<CollectionModel<EntityModel<E>>> fetchAll() {
+      List<EntityModel<E>> entities = service.findAll().stream()
+         .map(assembler::toModel)
+         .collect(Collectors.toList());
+
+      return ResponseEntity.ok(
+               CollectionModel.of(entities, 
+               linkTo(methodOn(BaseController.class).fetchAll()).withSelfRel()));
+    
+   }
+
+   @Override
+   public ResponseEntity<EntityModel<E>> fetchById(@PathVariable("id") Long id) {
+      E entity = Optional.of(service.findById(id)).orElseThrow(() -> new NotFoundException());
+
+      return ResponseEntity.ok(assembler.toModel(entity));
    };
 
    @Override
-   public ResponseEntity<E> create(@RequestBody E entity) {
-      try {
-         E tempE = service.save(entity);
-         logger.info("Model oluşturuldu: "+ tempE.toString());
-         return new ResponseEntity<>(tempE, HttpStatus.OK);
-      } catch (Exception e) {
-         return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
+   public ResponseEntity<?> create(@RequestBody E entity) {
+      E savedEntity = service.save(entity);
+
+      EntityModel<E> entityResource = assembler.toModel(savedEntity);
+
+      return ResponseEntity
+         .created(entityResource.getRequiredLink(IanaLinkRelations.SELF).toUri())
+         .body(entityResource);
    }
 
    @Override
-   public ResponseEntity<E> deleteById(@PathVariable("id") Long id)
+   public ResponseEntity<?> deleteById(@PathVariable("id") Long id)
    {
-      //TODO: Edit update operation
-      try {
-         E tempE = service.findById(id);
-         if(tempE == null)
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-         service.deleteById(id);
-         logger.info("Silinen Model: "+ tempE);
-         return new ResponseEntity<>(null, HttpStatus.OK);
-      } catch (Exception e) {
-         //TODO: handle exception
-         return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
+      service.deleteById(id);
+
+      return ResponseEntity.noContent().build();
    }
 }

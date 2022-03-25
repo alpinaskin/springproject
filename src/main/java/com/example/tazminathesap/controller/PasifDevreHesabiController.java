@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/pasifdevre")
+@RequestMapping("api/v1/pasifdevre")
 public class PasifDevreHesabiController extends BaseController<PasifDevreHesabi, PasifDevreHesabiService> {
 
-    protected PasifDevreHesabiController(PasifDevreHesabiService service) {
-        super(service);
+    protected PasifDevreHesabiController(PasifDevreHesabiService service, GenericModelAssembler<PasifDevreHesabi> assembler) {
+        super(service, assembler);
     }
 }

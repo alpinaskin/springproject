@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/ucretbilgileri")
+@RequestMapping("api/v1/ucretbilgileri")
 public class UcretBilgileriController extends BaseController<UcretBilgileri, UcretBilgileriService> {
 
-	protected UcretBilgileriController(UcretBilgileriService service) {
-		super(service);
+	protected UcretBilgileriController(UcretBilgileriService service, GenericModelAssembler<UcretBilgileri> assembler) {
+		super(service, assembler);
 	}
 	
 }

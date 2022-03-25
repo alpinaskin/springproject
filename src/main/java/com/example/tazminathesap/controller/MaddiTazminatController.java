@@ -25,9 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/madditazminat")
+@RequestMapping("api/v1/madditazminat")
 public class MaddiTazminatController extends BaseController<MaddiTazminat, MaddiTazminatService> {
-
     private AsgariUcretService asgariUcretService;
     private GelecekDevreHesabiService gelecekDevreHesabiService;
     private GecmisDevreHesabiService gecmisDevreHesabiService;
@@ -37,8 +36,8 @@ public class MaddiTazminatController extends BaseController<MaddiTazminat, Maddi
             GecmisDevreHesabiService gecmisDevreHesabiService, 
             GelecekDevreHesabiService gelecekDevreHesabiService, 
             PasifDevreHesabiService pasifDevreHesabiService, 
-            AsgariUcretService asgariUcretService) {
-        super(service);
+            AsgariUcretService asgariUcretService, GenericModelAssembler<MaddiTazminat> assembler) {
+        super(service, assembler);
         this.gecmisDevreHesabiService = gecmisDevreHesabiService;
         this.gelecekDevreHesabiService = gelecekDevreHesabiService;
         this.pasifDevreHesabiService = pasifDevreHesabiService;
@@ -46,7 +45,7 @@ public class MaddiTazminatController extends BaseController<MaddiTazminat, Maddi
     }
 
     @PostMapping(value= "/")
-    public ResponseEntity<MaddiTazminat> createMaddiTazminatByRapor(@RequestBody TazminatRapor tazminatRapor)
+    public ResponseEntity<?> createMaddiTazminatByRapor(@RequestBody TazminatRapor tazminatRapor)
     {
         logger.info(tazminatRapor.toString());
         LocalDate ucretTarihi = tazminatRapor.getTarihBilgileri().getUcretTarihi();
