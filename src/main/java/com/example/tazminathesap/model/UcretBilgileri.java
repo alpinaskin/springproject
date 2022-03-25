@@ -42,4 +42,8 @@ public class UcretBilgileri extends BaseEntity {
 		this.gunlukDigerHaklar = gunlukDigerHaklar;
 	}
 
+	public Double getYevmiye(){
+		return this.gunlukCiplakYevmiye + this.gunlukIkramiye + this.gunlukServis + this.gunlukYemek + this.gunlukYakacak + this.gunlukDigerHaklar;
+	}
+
 }

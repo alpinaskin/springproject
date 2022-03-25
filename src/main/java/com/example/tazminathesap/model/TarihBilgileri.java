@@ -1,6 +1,7 @@
 package com.example.tazminathesap.model;
 
 import java.time.LocalDate;
+import java.time.Period;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -43,4 +44,11 @@ public class TarihBilgileri extends BaseEntity {
 		this.istirahatBitisTarihi = istirahatBitisTarihi;
 	}
 
+	
+	public Integer getYas(LocalDate currentDate){
+		if((this.kazaliDogumTarihi != null) && (currentDate != null))
+			return Period.between(this.kazaliDogumTarihi, currentDate).getYears();
+		else
+			return null;
+	}
 }

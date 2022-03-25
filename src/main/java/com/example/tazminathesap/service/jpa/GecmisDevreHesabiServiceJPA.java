@@ -41,14 +41,13 @@ public class GecmisDevreHesabiServiceJPA extends AbstractJpaService<GecmisDevreH
         LocalDate kazaTarihi = tazminatRapor.getTarihBilgileri().getKazaTarihi();
         LocalDate raporTarihi = tazminatRapor.getTarihBilgileri().getRaporTarihi();
         EkBilgiler ekBilgiler = tazminatRapor.getEkBilgiler();
-        BigDecimal netAsgariUcret = asgariUcret.getAsgariUcretMiktar();
         //Kaza tarihi ve rapor yıl sonu arasındaki süreyi  hesapla
         gecmisDevreHesabi.setKazaTarihiRaporYiliSonu(helper.getIkiTarihArasi(tazminatRapor));
 
         //istirahat süresi x kaza tarihindeki asgari ücret net
         helper.setDays(kazaTarihi, istirahatBitisTarihi);        
         
-        gecmisDevreHesabi.setIstirahatliDonemZarari(istirahatOncesiService.istirahatOncesiDonemZarariHesapla(helper.getDays(), netAsgariUcret, ekBilgiler));
+        gecmisDevreHesabi.setIstirahatliDonemZarari(istirahatOncesiService.istirahatOncesiDonemZarariHesapla(helper.getDays(), asgariUcret, ekBilgiler, tazminatRapor.getUcretBilgileri().getYevmiye()));
         //İstirahat sonrası zararı hesapla
         gecmisDevreHesabi = istirahatSonrasiZararHesapla(gecmisDevreHesabi, istirahatBitisTarihi, raporTarihi, asgariUcretList);
         
@@ -66,12 +65,12 @@ public class GecmisDevreHesabiServiceJPA extends AbstractJpaService<GecmisDevreH
 
         List<IstirahatSonrasiZarari> istirahatSonrasiZarariList = asgariUcretList.stream()
                     .filter(asgariUcret -> asgariUcret.getBaslangicTarih().isBefore(istirahatBitisTarih))
-                    .map(asgariUcret -> new IstirahatSonrasiZarari(helper.getGunlukAsgariUcret(asgariUcret.getAsgariUcretMiktar()).multiply(new BigDecimal(helper.getIkiTarihArasindakiGun(asgariUcret.getBaslangicTarih(),asgariUcret.getBitisTarih()))), "", gecmisDevreHesabi))
+                    .map(asgariUcret -> new IstirahatSonrasiZarari(helper.getGunlukAsgariUcret(asgariUcret.getAsgariUcretMiktar()).multiply(new BigDecimal(helper.getIkiTarihArasindakiGun(istirahatBitisTarih, asgariUcret.getBitisTarih()))), istirahatBitisTarih+ " - "+ asgariUcret.getBitisTarih() + " İki Tarih Arası Gün: " + helper.getIkiTarihArasindakiGun(istirahatBitisTarih,asgariUcret.getBitisTarih()) + " ", gecmisDevreHesabi))
                     .collect(Collectors.toList());
 
         List<IstirahatSonrasiZarari> istirahatSonrasiZarariList2 = asgariUcretList.stream()
             .filter(asgariUcret -> !(asgariUcret.getBaslangicTarih().isBefore(istirahatBitisTarih)))
-            .map(asgariUcret -> new IstirahatSonrasiZarari(helper.getGunlukAsgariUcret(asgariUcret.getAsgariUcretMiktar()).multiply(new BigDecimal(helper.getIkiTarihArasindakiGun(asgariUcret.getBaslangicTarih(),asgariUcret.getBitisTarih())))," " , gecmisDevreHesabi))
+            .map(asgariUcret -> new IstirahatSonrasiZarari(helper.getGunlukAsgariUcret(asgariUcret.getAsgariUcretMiktar()).multiply(new BigDecimal(helper.getIkiTarihArasindakiGun(asgariUcret.getBaslangicTarih(), asgariUcret.getBitisTarih().isAfter(raporTarih) ? raporTarih : asgariUcret.getBitisTarih()))), asgariUcret.getBaslangicTarih()+ " - "+ (asgariUcret.getBitisTarih().isAfter(raporTarih) ? raporTarih : asgariUcret.getBitisTarih()) + " İki Tarih Arası Gün: " + helper.getIkiTarihArasindakiGun(asgariUcret.getBaslangicTarih(), asgariUcret.getBitisTarih().isAfter(raporTarih) ? raporTarih : asgariUcret.getBitisTarih()) + " " , gecmisDevreHesabi))
             .collect(Collectors.toList());
 
         istirahatSonrasiZarariList.addAll(istirahatSonrasiZarariList2);

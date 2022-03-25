@@ -33,7 +33,7 @@ public class GelecekDevreHesabiServiceJPA extends AbstractJpaService<GelecekDevr
         LocalDate dogumTarihi = tazminatRapor.getTarihBilgileri().getKazaliDogumTarihi();
         LocalDate raporTarihi = tazminatRapor.getTarihBilgileri().getRaporTarihi();
         LocalDate sonAktifCalismaTarihi = helper.getAktifCalismaTarih(dogumTarihi);
-        Double yevmiye = tazminatRapor.getUcretBilgileri().getGunlukCiplakYevmiye();
+        Double yevmiye = tazminatRapor.getUcretBilgileri().getYevmiye();
         BigDecimal asgariUcretMiktar = asgariUcret.getAsgariUcretMiktar();
         GelecekDevreHesabi gelecekDevreHesabi = new GelecekDevreHesabi();
  

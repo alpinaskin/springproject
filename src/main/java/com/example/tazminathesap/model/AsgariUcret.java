@@ -21,4 +21,7 @@ public class AsgariUcret extends BaseEntity {
 	private LocalDate bitisTarih;
 	private BigDecimal asgariUcretMiktar;
 
+	public Double getGunlukAsgariUcret(){
+		return asgariUcretMiktar.doubleValue()/30;
+	}
 }
