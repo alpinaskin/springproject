@@ -1,2 +1,2 @@
 # Bilirkişi Maddi Tazminat Hesaplama App'i
-https://81uxzo.csb.app/ adresten demoya ulaşabilisiniz.
+https://codesandbox.io/s/81uxzo adresten demoya ulaşabilisiniz.
