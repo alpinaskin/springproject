@@ -2,7 +2,6 @@ package com.example.tazminathesap.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.example.tazminathesap.model.ERole;
 import com.example.tazminathesap.model.Role;
@@ -49,9 +48,9 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
-        List<String> roles = userDetails.getAuthorities().stream()
-            .map(item -> item.getAuthority())
-            .collect(Collectors.toList());
+        // List<String> roles = userDetails.getAuthorities().stream()
+        //     .map(item -> item.getAuthority())
+        //     .collect(Collectors.toList());
         
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
             .body(userDetails);
@@ -59,7 +58,6 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
-        System.out.println("aaa");
         if(userRepository.existsByEmail(user.getEmail()))
             return ResponseEntity.badRequest().body("Böyle bir email var!");
         
@@ -67,12 +65,19 @@ public class AuthController {
         userToSave.setPassword(encoder.encode(user.getPassword()));
         
         List<Role> roles = new ArrayList<>();
-        Role newRole = roleRepository.findByName(ERole.USER).orElseThrow(() -> new RuntimeException("role yok?"));
+        roleRepository.save(new Role(1, ERole.ROLE_USER));
+        Role newRole = roleRepository.findByName(ERole.ROLE_USER).orElseThrow(() -> new RuntimeException("rol yok?"));
         roles.add(newRole);
 
         userToSave.setRoles(roles);
         userRepository.save(userToSave);
 
-        return ResponseEntity.ok().body("User kaydedildi");
+        return ResponseEntity.ok().body("Kullanıcı kaydedildi");
+    }
+    @PostMapping("/signout")
+    public ResponseEntity<?> logoutUser() {
+        ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
+            .body("Çıkış yaptınız!");
     }
 }

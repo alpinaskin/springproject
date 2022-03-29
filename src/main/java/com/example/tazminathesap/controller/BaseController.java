@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 @CrossOrigin("*")
 public abstract class BaseController<E extends BaseEntity, S extends CrudService<E>> implements CommonController<E> {
    Logger logger = LoggerFactory.getLogger(BaseController.class); 
-   private final S service;
-   private final GenericModelAssembler<E> assembler;
+   protected final S service;
+   protected final GenericModelAssembler<E> assembler;
 
    @Autowired 
    protected BaseController(S service, GenericModelAssembler<E> assembler)
@@ -35,6 +35,7 @@ public abstract class BaseController<E extends BaseEntity, S extends CrudService
    }
 
    @Override
+   //@PreAuthorize("hasRole('ADMIN')")
    public ResponseEntity<CollectionModel<EntityModel<E>>> fetchAll() {
       List<EntityModel<E>> entities = service.findAll().stream()
          .map(assembler::toModel)
@@ -42,8 +43,7 @@ public abstract class BaseController<E extends BaseEntity, S extends CrudService
 
       return ResponseEntity.ok(
                CollectionModel.of(entities, 
-               linkTo(methodOn(BaseController.class).fetchAll()).withSelfRel()));
-    
+                  linkTo(methodOn(BaseController.class).fetchAll()).withSelfRel()));
    }
 
    @Override

@@ -9,6 +9,4 @@ public interface UserService extends CrudService<User>{
     public List<User> findByName(String name);
 
     public User findByEmail(String email);
-
-    public void registerUser(User user);
 }

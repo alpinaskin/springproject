@@ -19,18 +19,6 @@ public class UserServiceJPA extends AbstractJpaService<User, UserRepository> imp
     public List<User> findByName(String name) {
         return repository.findByName(name);
     }
-
-    @Override
-    public void registerUser(User user) {
-        
-        final String encryptedPassword = user.getPassword();
-
-        user.setPassword(encryptedPassword);
-        
-        final User createdUser = repository.save(user); 
-        
-        //final ConfirmationToken confToken = new ConfirmationToken(user);
-    }
     
     public User findByEmail(String email) {
         return repository.findByEmail(email);

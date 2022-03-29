@@ -23,12 +23,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 public class JwtUtils {
-    // @Value("${tazminathesap.app.jwtSecret}")
-    private String jwtSecret = "aa";
-    // @Value("${tazminathesap.app.jwtExpirationMs}")
+    @Value("${tazminathesap.app.jwtSecret}")
+    private String jwtSecret = "HRlELXqpSB";
+    @Value("${tazminathesap.app.jwtExpirationMs}")
     private int jwtExpirationMs = 86400000;
-    // @Value("${tazminathesap.app.jwtCookie}")
-    private String jwtCookie="eua";
+    @Value("${tazminathesap.app.jwtCookie}")
+    private String jwtCookie="bilirkisi";
 
     public String getJwtFromCookie(HttpServletRequest request) {
         Cookie cookie = WebUtils.getCookie(request, jwtCookie);
@@ -40,7 +40,7 @@ public class JwtUtils {
 
     public ResponseCookie generateJwtCookie (UserDetailsImpl userPrincipal) {
         String jwt = generateTokenFromEmail(userPrincipal.getEmail());
-        ResponseCookie cookie = ResponseCookie.from(jwtCookie, jwt).path("/api/v1").maxAge(24 * 60 *60).httpOnly(true).build();
+        ResponseCookie cookie = ResponseCookie.from(jwtCookie, jwt).path("/api/v1").maxAge(24 * 60 * 60).httpOnly(true).build();
         return cookie;
     }
 

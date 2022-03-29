@@ -1,3 +1,6 @@
+INSERT INTO roles (name) VALUES('ROLE_ADMIN');
+INSERT INTO roles (name) VALUES('ROLE_USER');
+
 INSERT INTO TRH_TABLO (yas, erkek, kadin) VALUES(0,71.93,78.02);
 INSERT INTO TRH_TABLO (yas, erkek, kadin) VALUES(1,72.35,77.66);
 INSERT INTO TRH_TABLO (yas, erkek, kadin) VALUES(2,71.42,76.68);
