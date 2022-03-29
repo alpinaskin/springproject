@@ -65,7 +65,6 @@ public class AuthController {
         userToSave.setPassword(encoder.encode(user.getPassword()));
         
         List<Role> roles = new ArrayList<>();
-        roleRepository.save(new Role(1, ERole.ROLE_USER));
         Role newRole = roleRepository.findByName(ERole.ROLE_USER).orElseThrow(() -> new RuntimeException("rol yok?"));
         roles.add(newRole);
 

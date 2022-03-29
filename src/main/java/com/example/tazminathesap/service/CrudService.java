@@ -13,6 +13,8 @@ public interface CrudService<T extends BaseEntity> {
 	
 	T save(T object);
 	
+	T update(T object, Long id);
+	
 	void delete (T object);
 	
 	void deleteById(Long id);

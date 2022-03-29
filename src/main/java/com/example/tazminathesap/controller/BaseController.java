@@ -65,6 +65,16 @@ public abstract class BaseController<E extends BaseEntity, S extends CrudService
    }
 
    @Override
+   public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody E entity) {
+      E updatedEntity = service.update(entity, id);
+
+      EntityModel<E> entityResource = assembler.toModel(updatedEntity);
+      
+      return ResponseEntity.created(entityResource.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityResource);
+
+   }
+
+   @Override
    public ResponseEntity<?> deleteById(@PathVariable("id") Long id)
    {
       service.deleteById(id);

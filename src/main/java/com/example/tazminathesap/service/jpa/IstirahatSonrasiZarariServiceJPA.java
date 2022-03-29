@@ -14,7 +14,6 @@ public class IstirahatSonrasiZarariServiceJPA extends AbstractJpaService<Istirah
 
     public IstirahatSonrasiZarariServiceJPA(IstirahatSonrasiZarariRepository repository) {
         super(repository);
-        //TODO Auto-generated constructor stub
     }
 
     public BigDecimal getToplamIstirahatSonrasiZarar(List<IstirahatSonrasiZarari> istirahatSonrasiZararList){
