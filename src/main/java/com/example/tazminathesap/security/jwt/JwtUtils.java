@@ -23,11 +23,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 public class JwtUtils {
-    @Value("${tazminathesap.app.jwtSecret}")
+    //@Value("${tazminathesap.app.jwtSecret}")
     private String jwtSecret = "HRlELXqpSB";
-    @Value("${tazminathesap.app.jwtExpirationMs}")
+    //@Value("${tazminathesap.app.jwtExpirationMs}")
     private int jwtExpirationMs = 86400000;
-    @Value("${tazminathesap.app.jwtCookie}")
+    //@Value("${tazminathesap.app.jwtCookie}")
     private String jwtCookie="bilirkisi";
 
     public String getJwtFromCookie(HttpServletRequest request) {
