@@ -13,7 +13,6 @@ public class GenericModelAssembler<E extends BaseEntity> implements Representati
 
     @Override
     public EntityModel<E> toModel(E entity) {
-        //System.out.println(methodOn(BaseController.class).fetchAll());
         String entityName = entity.getClass().getSimpleName().toLowerCase();
         return EntityModel.of(entity, 
             linkTo(BaseController.class).slash(entityName).slash(entity.getId()).withSelfRel(),
