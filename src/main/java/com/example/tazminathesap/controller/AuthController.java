@@ -2,24 +2,32 @@ package com.example.tazminathesap.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.example.tazminathesap.dto.request.LogOutRequest;
+import com.example.tazminathesap.dto.request.LoginRequest;
+import com.example.tazminathesap.dto.request.TokenRefreshRequest;
+import com.example.tazminathesap.dto.response.JwtResponse;
+import com.example.tazminathesap.dto.response.TokenRefreshResponse;
+import com.example.tazminathesap.exception.TokenRefreshException;
 import com.example.tazminathesap.model.ERole;
+import com.example.tazminathesap.model.RefreshToken;
 import com.example.tazminathesap.model.Role;
 import com.example.tazminathesap.model.User;
 import com.example.tazminathesap.model.UserDetailsImpl;
 import com.example.tazminathesap.repository.RoleRepository;
 import com.example.tazminathesap.repository.UserRepository;
 import com.example.tazminathesap.security.jwt.JwtUtils;
-import com.google.common.net.HttpHeaders;
+import com.example.tazminathesap.service.RefreshTokenService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,20 +48,29 @@ public class AuthController {
     PasswordEncoder encoder;
     @Autowired
     JwtUtils jwtUtils;
+    @Autowired
+    RefreshTokenService refreshTokenService;
 
     @PostMapping("/signin") 
-    public ResponseEntity<?> authenticateUser(@RequestBody User user){
+    public ResponseEntity<?> authenticateUser(@Validated @RequestBody LoginRequest user){
+
         Authentication authentication = authenticationManager
             .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
-        // List<String> roles = userDetails.getAuthorities().stream()
-        //     .map(item -> item.getAuthority())
-        //     .collect(Collectors.toList());
         
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-            .body(userDetails);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        String jwt = jwtUtils.generateJwtToken(userDetails);
+
+        List<String> roles = userDetails.getAuthorities().stream()
+             .map(item -> item.getAuthority())
+             .collect(Collectors.toList());
+        
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
+
+        return ResponseEntity.ok()
+            .body(new JwtResponse(jwt, refreshToken.getToken(), userDetails.getId(), userDetails.getName(), userDetails.getLastName(), userDetails.getEmail(), roles));
     }
 
     @PostMapping("/signup")
@@ -73,10 +90,24 @@ public class AuthController {
 
         return ResponseEntity.ok().body("Kullanıcı kaydedildi");
     }
-    @PostMapping("/signout")
-    public ResponseEntity<?> logoutUser() {
-        ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
-            .body("Çıkış yaptınız!");
+
+    @PostMapping("/refreshtoken")
+    public ResponseEntity<?> refreshToken(@RequestBody TokenRefreshRequest request) {
+        String requestRefreshToken = request.getRefreshToken();
+
+        return refreshTokenService.findByToken(requestRefreshToken)
+            .map(refreshTokenService::verifyExpiration)
+            .map(RefreshToken::getUser)
+            .map(user -> {
+                String token = jwtUtils.generateTokenFromUsername(user.getEmail());
+                return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
+            })
+            .orElseThrow(() -> new TokenRefreshException(requestRefreshToken, "Refresh Token bulunamadı!"));
+    } 
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logoutUser(@RequestBody LogOutRequest logOutRequest) {
+      refreshTokenService.deleteByUserId(logOutRequest.getUserId());
+      return ResponseEntity.ok("Başarılı şekilde çıkıldı");
     }
 }
