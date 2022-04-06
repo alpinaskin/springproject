@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import com.example.tazminathesap.dto.request.LogOutRequest;
 import com.example.tazminathesap.dto.request.LoginRequest;
+import com.example.tazminathesap.dto.request.PasswordChangeRequest;
 import com.example.tazminathesap.dto.request.TokenRefreshRequest;
 import com.example.tazminathesap.dto.response.JwtResponse;
 import com.example.tazminathesap.dto.response.TokenRefreshResponse;
@@ -52,7 +53,7 @@ public class AuthController {
     RefreshTokenService refreshTokenService;
 
     @PostMapping("/signin") 
-    public ResponseEntity<?> authenticateUser(@Validated @RequestBody LoginRequest user){
+    public ResponseEntity<?> kullaniciyiGirisYap(@Validated @RequestBody LoginRequest user){
 
         Authentication authentication = authenticationManager
             .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
@@ -89,6 +90,26 @@ public class AuthController {
         userRepository.save(userToSave);
 
         return ResponseEntity.ok().body("Kullanıcı kaydedildi");
+    }
+
+    @PostMapping("/changepassword")
+    public ResponseEntity<?> changePassword(@RequestBody PasswordChangeRequest user) {
+        if(!userRepository.existsByEmail(user.getEmail()))
+            return ResponseEntity.badRequest().body("Kullanıcı bulunamadı!");
+        
+        User userToBeChanged = userRepository.findByEmail(user.getEmail());
+
+        Authentication authentication = authenticationManager
+            .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getOldPassword()));
+
+        if(authentication.isAuthenticated())
+            userToBeChanged.setPassword(encoder.encode(user.getNewPassword()));
+        else
+            return ResponseEntity.badRequest().body("Kullanıcı Şifresini Yanlış Girdiniz");
+        
+        userRepository.save(userToBeChanged);
+
+        return ResponseEntity.ok().body("Kullanıcı Şifresi Başarıyla Değiştirildi!");
     }
 
     @PostMapping("/refreshtoken")

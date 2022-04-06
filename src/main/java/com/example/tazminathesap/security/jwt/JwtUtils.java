@@ -20,7 +20,7 @@ public class JwtUtils {
     //@Value("${tazminathesap.app.jwtSecret}")
     private String jwtSecret = "HRlELXqpSB";
     //@Value("${tazminathesap.app.jwtExpirationMs}")
-    private int jwtExpirationMs = 60000;
+    private int jwtExpirationMs = 3600000;
 
 
     public String generateJwtToken(UserDetailsImpl userPrincipal) {
