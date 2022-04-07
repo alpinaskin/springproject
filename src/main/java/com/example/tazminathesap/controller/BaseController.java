@@ -17,6 +17,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,8 +25,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 @CrossOrigin("*")
 public abstract class BaseController<E extends BaseEntity, S extends CrudService<E>> implements CommonController<E> {
    Logger logger = LoggerFactory.getLogger(BaseController.class); 
-   private final S service;
-   private final GenericModelAssembler<E> assembler;
+   protected final S service;
+   protected final GenericModelAssembler<E> assembler;
 
    @Autowired 
    protected BaseController(S service, GenericModelAssembler<E> assembler)
@@ -35,6 +36,7 @@ public abstract class BaseController<E extends BaseEntity, S extends CrudService
    }
 
    @Override
+   @PreAuthorize("hasRole('USER')")
    public ResponseEntity<CollectionModel<EntityModel<E>>> fetchAll() {
       List<EntityModel<E>> entities = service.findAll().stream()
          .map(assembler::toModel)
@@ -42,8 +44,7 @@ public abstract class BaseController<E extends BaseEntity, S extends CrudService
 
       return ResponseEntity.ok(
                CollectionModel.of(entities, 
-               linkTo(methodOn(BaseController.class).fetchAll()).withSelfRel()));
-    
+                  linkTo(methodOn(BaseController.class).fetchAll()).withSelfRel()));
    }
 
    @Override
@@ -54,6 +55,7 @@ public abstract class BaseController<E extends BaseEntity, S extends CrudService
    };
 
    @Override
+   @PreAuthorize("hasRole('ADMIN')")
    public ResponseEntity<?> create(@RequestBody E entity) {
       E savedEntity = service.save(entity);
 
@@ -62,6 +64,16 @@ public abstract class BaseController<E extends BaseEntity, S extends CrudService
       return ResponseEntity
          .created(entityResource.getRequiredLink(IanaLinkRelations.SELF).toUri())
          .body(entityResource);
+   }
+
+   @Override
+   public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody E entity) {
+      E updatedEntity = service.update(entity, id);
+
+      EntityModel<E> entityResource = assembler.toModel(updatedEntity);
+      
+      return ResponseEntity.created(entityResource.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityResource);
+
    }
 
    @Override

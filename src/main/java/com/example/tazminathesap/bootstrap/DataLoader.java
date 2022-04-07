@@ -2,13 +2,20 @@ package com.example.tazminathesap.bootstrap;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.example.tazminathesap.model.AsgariUcret;
+import com.example.tazminathesap.model.ERole;
 import com.example.tazminathesap.model.EkBilgiler;
 import com.example.tazminathesap.model.RaporBilgileri;
+import com.example.tazminathesap.model.Role;
 import com.example.tazminathesap.model.TarihBilgileri;
 import com.example.tazminathesap.model.TazminatRapor;
 import com.example.tazminathesap.model.UcretBilgileri;
+import com.example.tazminathesap.model.User;
+import com.example.tazminathesap.repository.RoleRepository;
+import com.example.tazminathesap.repository.UserRepository;
 import com.example.tazminathesap.service.AsgariUcretService;
 import com.example.tazminathesap.service.jpa.EkBilgilerServiceJPA;
 import com.example.tazminathesap.service.jpa.RaporBilgileriServiceJPA;
@@ -18,6 +25,7 @@ import com.example.tazminathesap.service.jpa.UcretBilgileriServiceJPA;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -28,6 +36,10 @@ public class DataLoader implements CommandLineRunner {
 	private final UcretBilgileriServiceJPA ucretBilgileriService;
 	private final TazminatRaporServiceJPA tazminatRaporService;
 	private final AsgariUcretService asgariUcretService;
+	private final UserRepository userRepository;
+	private final RoleRepository roleRepository;
+	@Autowired
+	PasswordEncoder encoder;
 
 	@Autowired
 	public DataLoader(EkBilgilerServiceJPA ekBilgilerService, 
@@ -35,7 +47,9 @@ public class DataLoader implements CommandLineRunner {
 					TarihBilgileriServiceJPA tarihBilgileriService, 
 					UcretBilgileriServiceJPA ucretBilgileriService,
 					TazminatRaporServiceJPA tazminatRaporService,
-					AsgariUcretService asgariUcretService) {
+					AsgariUcretService asgariUcretService,
+					UserRepository userRepository,
+					RoleRepository roleRepository) {
 		super();
 		this.ekBilgilerService = ekBilgilerService;
 		this.raporBilgileriService = raporBilgileriService;
@@ -43,11 +57,27 @@ public class DataLoader implements CommandLineRunner {
 		this.ucretBilgileriService = ucretBilgileriService;
 		this.tazminatRaporService = tazminatRaporService;
 		this.asgariUcretService = asgariUcretService;
+		this.userRepository = userRepository;
+		this.roleRepository = roleRepository;
 	}
 	
 	@Override
 	public void run(String... args) throws Exception {
 
+
+		/*** Admin kullanıcı oluştur */
+		User adminUser = new User("admin", "", "admin@bilirkisi.com", encoder.encode("sifrem_1"));
+		
+		List<Role> roles = new ArrayList<>();
+		Role userRole = roleRepository.findByName(ERole.ROLE_USER).orElseThrow(() -> new RuntimeException("rol yok?"));
+		Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN).orElseThrow(() -> new RuntimeException("rol yok?"));
+		
+		roles.add(userRole);
+		roles.add(adminRole);
+		
+		adminUser.setRoles(roles);
+		userRepository.save(adminUser);
+		
 		asgariUcretService.save(new AsgariUcret(
 			LocalDate.of(2010,1,1),
 			LocalDate.of(2010,6,30),
