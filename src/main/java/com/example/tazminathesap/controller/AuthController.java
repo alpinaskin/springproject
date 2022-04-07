@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-<<<<<<< HEAD
 import com.example.tazminathesap.dto.request.LogOutRequest;
 import com.example.tazminathesap.dto.request.LoginRequest;
 import com.example.tazminathesap.dto.request.PasswordChangeRequest;
@@ -12,10 +11,6 @@ import com.example.tazminathesap.dto.request.TokenRefreshRequest;
 import com.example.tazminathesap.dto.response.JwtResponse;
 import com.example.tazminathesap.dto.response.TokenRefreshResponse;
 import com.example.tazminathesap.exception.TokenRefreshException;
-=======
-import com.example.tazminathesap.dto.request.LoginRequest;
-import com.example.tazminathesap.dto.response.JwtResponse;
->>>>>>> 88893ce3f6ec9d4f8ca7086b556c6429056c8a4a
 import com.example.tazminathesap.model.ERole;
 import com.example.tazminathesap.model.RefreshToken;
 import com.example.tazminathesap.model.Role;
@@ -24,10 +19,7 @@ import com.example.tazminathesap.model.UserDetailsImpl;
 import com.example.tazminathesap.repository.RoleRepository;
 import com.example.tazminathesap.repository.UserRepository;
 import com.example.tazminathesap.security.jwt.JwtUtils;
-<<<<<<< HEAD
 import com.example.tazminathesap.service.RefreshTokenService;
-=======
->>>>>>> 88893ce3f6ec9d4f8ca7086b556c6429056c8a4a
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
