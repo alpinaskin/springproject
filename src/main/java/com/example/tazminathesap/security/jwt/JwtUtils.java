@@ -4,10 +4,7 @@ import java.util.Date;
 
 import com.example.tazminathesap.model.UserDetailsImpl;
 
-<<<<<<< HEAD
-=======
 import org.springframework.security.core.Authentication;
->>>>>>> 88893ce3f6ec9d4f8ca7086b556c6429056c8a4a
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.ExpiredJwtException;
