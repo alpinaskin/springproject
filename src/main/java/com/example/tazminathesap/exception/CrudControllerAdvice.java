@@ -28,4 +28,11 @@ public class CrudControllerAdvice {
 
         return ResponseEntity.status(response.getStatus()).body(response);
     }
+
+    @ExceptionHandler(TokenRefreshException.class)
+    ResponseEntity<ApiExceptionResponse> handleTokenRefreshException(TokenRefreshException exception){
+        ApiExceptionResponse response = new ApiExceptionResponse(exception.getMessage(), HttpStatus.FORBIDDEN, LocalDateTime.now());
+
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
 }

@@ -17,6 +17,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,7 +36,7 @@ public abstract class BaseController<E extends BaseEntity, S extends CrudService
    }
 
    @Override
-   //@PreAuthorize("hasRole('ADMIN')")
+   @PreAuthorize("hasRole('USER')")
    public ResponseEntity<CollectionModel<EntityModel<E>>> fetchAll() {
       List<EntityModel<E>> entities = service.findAll().stream()
          .map(assembler::toModel)
@@ -54,6 +55,7 @@ public abstract class BaseController<E extends BaseEntity, S extends CrudService
    };
 
    @Override
+   @PreAuthorize("hasRole('ADMIN')")
    public ResponseEntity<?> create(@RequestBody E entity) {
       E savedEntity = service.save(entity);
 

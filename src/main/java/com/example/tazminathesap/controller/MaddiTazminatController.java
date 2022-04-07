@@ -17,6 +17,7 @@ import com.example.tazminathesap.service.PasifDevreHesabiService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,9 +46,10 @@ public class MaddiTazminatController extends BaseController<MaddiTazminat, Maddi
     }
 
     @PostMapping(value= "/")
-    public ResponseEntity<?> createMaddiTazminatByRapor(@RequestBody TazminatRapor tazminatRapor)
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> createMaddiTazminatByRapor(@RequestBody TazminatRapor tazminatRapor, Long userId)
     {
-        logger.info(tazminatRapor.toString());
+        
         LocalDate ucretTarihi = tazminatRapor.getTarihBilgileri().getUcretTarihi();
         LocalDate kazaTarihi = tazminatRapor.getTarihBilgileri().getKazaTarihi();
         LocalDate raporTarihi = tazminatRapor.getTarihBilgileri().getRaporTarihi();
