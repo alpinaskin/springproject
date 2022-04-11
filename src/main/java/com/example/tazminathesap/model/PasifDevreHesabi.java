@@ -21,5 +21,4 @@ public class PasifDevreHesabi extends BaseEntity{
     private LocalDate bakiyeOmruTarihi;
     private BigDecimal brutZarar;
     private BigDecimal bugunkuZarar;
-
 }

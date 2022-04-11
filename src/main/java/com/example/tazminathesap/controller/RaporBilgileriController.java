@@ -13,5 +13,4 @@ public class RaporBilgileriController extends BaseController<RaporBilgileri, Rap
 	protected RaporBilgileriController(RaporBilgileriService service, GenericModelAssembler<RaporBilgileri> assembler) {
 		super(service, assembler);
 	}
-
 }

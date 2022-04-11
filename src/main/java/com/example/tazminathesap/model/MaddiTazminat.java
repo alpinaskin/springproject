@@ -18,19 +18,20 @@ import lombok.Setter;
 @Entity
 public class MaddiTazminat extends BaseEntity {
 
-    @OneToOne(cascade= CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
-    @JoinColumn(name="tazminat_id")
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
+    @JoinColumn(name = "tazminat_id")
     private TazminatRapor tazminatRapor;
 
-    @OneToOne(cascade= CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
-    @JoinColumn(name="gecmis_devre_hesabi_id")
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
+    @JoinColumn(name = "gecmis_devre_hesabi_id")
     private GecmisDevreHesabi gecmisDevreHesabi;
-    @OneToOne(cascade= CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
-    @JoinColumn(name="gelecek_devre_id")
+    
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
+    @JoinColumn(name = "gelecek_devre_id")
     private GelecekDevreHesabi gelecekDevreHesabi;
 
-    @OneToOne(cascade= CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
-    @JoinColumn(name="pasif_devre_hesabi_id")
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
+    @JoinColumn(name = "pasif_devre_hesabi_id")
     private PasifDevreHesabi pasifDevreHesabi;
-    
+
 }

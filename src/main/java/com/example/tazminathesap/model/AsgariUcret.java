@@ -16,7 +16,6 @@ import lombok.ToString;
 @ToString
 @Entity
 public class AsgariUcret extends BaseEntity { 
-	
 	private LocalDate baslangicTarih;
 	private LocalDate bitisTarih;
 	private BigDecimal asgariUcretMiktar;

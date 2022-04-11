@@ -9,29 +9,32 @@ import javax.persistence.OneToOne;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
-public class ZararHesapTablosu extends BaseEntity{
-    
+public class ZararHesapTablosu extends BaseEntity {
+
     @JsonManagedReference
-    @OneToOne(cascade= CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
-    @JoinColumn(name="gecmis_devre_hesabi_id")
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
+    @JoinColumn(name = "gecmis_devre_hesabi_id")
     private GecmisDevreHesabi gecmisDevreHesabi;
+
     @JsonManagedReference
-    @OneToOne(cascade= CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
-    @JoinColumn(name="gelecek_devre_hesabi_id")
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
+    @JoinColumn(name = "gelecek_devre_hesabi_id")
     private GelecekDevreHesabi gelecekDevreHesabi;
+
     @JsonManagedReference
-    @OneToOne(cascade= CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
     @JoinColumn(name = "pasif_devre_hesabi_id")
     private PasifDevreHesabi pasifDevreHesabi;
     private Double geciciIsGoremezlikTutari;
     private Double sgkAylikPesinDegeri;
     private Double nihaiZarar;
 
-
     public ZararHesapTablosu() {
     }
 
-    public ZararHesapTablosu(GecmisDevreHesabi gecmisDevreHesabi, GelecekDevreHesabi gelecekDevreHesabi, PasifDevreHesabi pasifDevreHesabi, Double geciciIsGoremezlikTutari, Double sgkAylikPesinDegeri, Double nihaiZarar) {
+    public ZararHesapTablosu(GecmisDevreHesabi gecmisDevreHesabi, GelecekDevreHesabi gelecekDevreHesabi,
+            PasifDevreHesabi pasifDevreHesabi, Double geciciIsGoremezlikTutari, Double sgkAylikPesinDegeri,
+            Double nihaiZarar) {
         this.gecmisDevreHesabi = gecmisDevreHesabi;
         this.gelecekDevreHesabi = gelecekDevreHesabi;
         this.pasifDevreHesabi = pasifDevreHesabi;

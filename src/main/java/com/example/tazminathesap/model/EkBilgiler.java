@@ -19,7 +19,6 @@ import lombok.ToString;
 @ToString
 @Entity
 public class EkBilgiler extends BaseEntity {
-
 	private Double davaliKusurOrani; //0-1 arası
 	private Double maluliyetOrani; // 0-1 arası
 	private Double sgkAyligiPesinDegeri;

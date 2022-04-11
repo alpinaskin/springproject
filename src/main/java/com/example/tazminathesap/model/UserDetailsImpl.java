@@ -25,13 +25,14 @@ public class UserDetailsImpl implements UserDetails {
     private String email;
     @JsonIgnore
     private String password;
-    private  Collection<? extends GrantedAuthority> authorities;
+    private Collection<? extends GrantedAuthority> authorities;
 
     public static UserDetailsImpl build(User user) {
         List<GrantedAuthority> authorities = user.getRoles().stream()
-            .map(role -> new SimpleGrantedAuthority(role.getName().name()))
-            .collect(Collectors.toList());
-        return new UserDetailsImpl(user.getId(), user.getName(), user.getLastName(), user.getEmail(), user.getPassword(), authorities);
+                .map(role -> new SimpleGrantedAuthority(role.getName().name()))
+                .collect(Collectors.toList());
+        return new UserDetailsImpl(user.getId(), user.getName(), user.getLastName(), user.getEmail(),
+                user.getPassword(), authorities);
     }
 
     @Override
@@ -53,6 +54,7 @@ public class UserDetailsImpl implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
     /**
      * Kullanıcı ismi olarak email kullanılıyor
      */
@@ -60,5 +62,5 @@ public class UserDetailsImpl implements UserDetails {
     public String getUsername() {
         return email;
     }
-    
+
 }

@@ -13,5 +13,4 @@ public class TazminatRaporController extends BaseController<TazminatRapor, Tazmi
 	protected TazminatRaporController(TazminatRaporService service, GenericModelAssembler<TazminatRapor> assembler) {
 		super(service, assembler);
 	}
-	
 }

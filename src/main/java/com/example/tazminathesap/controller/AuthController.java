@@ -52,36 +52,37 @@ public class AuthController {
     @Autowired
     RefreshTokenService refreshTokenService;
 
-    @PostMapping("/signin") 
-    public ResponseEntity<?> authenticateUser(@Validated @RequestBody LoginRequest user){
+    @PostMapping("/signin")
+    public ResponseEntity<?> authenticateUser(@Validated @RequestBody LoginRequest user) {
 
         Authentication authentication = authenticationManager
-            .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
-        
+                .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        
+
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
         String jwt = jwtUtils.generateJwtToken(userDetails);
 
         List<String> roles = userDetails.getAuthorities().stream()
-             .map(item -> item.getAuthority())
-             .collect(Collectors.toList());
-        
+                .map(item -> item.getAuthority())
+                .collect(Collectors.toList());
+
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 
         return ResponseEntity.ok()
-            .body(new JwtResponse(jwt, refreshToken.getToken(), userDetails.getId(), userDetails.getName(), userDetails.getLastName(), userDetails.getEmail(), roles));
+                .body(new JwtResponse(jwt, refreshToken.getToken(), userDetails.getId(), userDetails.getName(),
+                        userDetails.getLastName(), userDetails.getEmail(), roles));
     }
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
-        if(userRepository.existsByEmail(user.getEmail()))
+        if (userRepository.existsByEmail(user.getEmail()))
             return ResponseEntity.badRequest().body("Böyle bir email var!");
-        
+
         User userToSave = user;
         userToSave.setPassword(encoder.encode(user.getPassword()));
-        
+
         List<Role> roles = new ArrayList<>();
         Role newRole = roleRepository.findByName(ERole.ROLE_USER).orElseThrow(() -> new RuntimeException("rol yok?"));
         roles.add(newRole);
@@ -94,19 +95,19 @@ public class AuthController {
 
     @PostMapping("/changepassword")
     public ResponseEntity<?> changePassword(@RequestBody PasswordChangeRequest user) {
-        if(!userRepository.existsByEmail(user.getEmail()))
+        if (!userRepository.existsByEmail(user.getEmail()))
             return ResponseEntity.badRequest().body("Kullanıcı bulunamadı!");
-        
+
         User userToBeChanged = userRepository.findByEmail(user.getEmail());
 
         Authentication authentication = authenticationManager
-            .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getOldPassword()));
+                .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getOldPassword()));
 
-        if(authentication.isAuthenticated())
+        if (authentication.isAuthenticated())
             userToBeChanged.setPassword(encoder.encode(user.getNewPassword()));
         else
             return ResponseEntity.badRequest().body("Kullanıcı Şifresini Yanlış Girdiniz");
-        
+
         userRepository.save(userToBeChanged);
 
         return ResponseEntity.ok().body("Kullanıcı Şifresi Başarıyla Değiştirildi!");
@@ -117,18 +118,18 @@ public class AuthController {
         String requestRefreshToken = request.getRefreshToken();
 
         return refreshTokenService.findByToken(requestRefreshToken)
-            .map(refreshTokenService::verifyExpiration)
-            .map(RefreshToken::getUser)
-            .map(user -> {
-                String token = jwtUtils.generateTokenFromUsername(user.getEmail());
-                return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
-            })
-            .orElseThrow(() -> new TokenRefreshException(requestRefreshToken, "Refresh Token bulunamadı!"));
-    } 
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getUser)
+                .map(user -> {
+                    String token = jwtUtils.generateTokenFromUsername(user.getEmail());
+                    return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
+                })
+                .orElseThrow(() -> new TokenRefreshException(requestRefreshToken, "Refresh Token bulunamadı!"));
+    }
 
     @PostMapping("/logout")
     public ResponseEntity<?> logoutUser(@RequestBody LogOutRequest logOutRequest) {
-      refreshTokenService.deleteByUserId(logOutRequest.getUserId());
-      return ResponseEntity.ok("Başarılı şekilde çıkıldı");
+        refreshTokenService.deleteByUserId(logOutRequest.getUserId());
+        return ResponseEntity.ok("Başarılı şekilde çıkıldı");
     }
 }

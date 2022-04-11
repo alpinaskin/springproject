@@ -9,13 +9,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 import com.example.tazminathesap.model.BaseEntity;
 
 @Component
-public class GenericModelAssembler<E extends BaseEntity> implements RepresentationModelAssembler<E, EntityModel<E>>{
+public class GenericModelAssembler<E extends BaseEntity> implements RepresentationModelAssembler<E, EntityModel<E>> {
 
     @Override
     public EntityModel<E> toModel(E entity) {
         String entityName = entity.getClass().getSimpleName().toLowerCase();
-        return EntityModel.of(entity, 
-            linkTo(BaseController.class).slash(entityName).slash(entity.getId()).withSelfRel(),
+        return EntityModel.of(entity,
+                linkTo(BaseController.class).slash(entityName).slash(entity.getId()).withSelfRel(),
                 linkTo(BaseController.class).slash(entityName).withRel(entityName));
     }
 }

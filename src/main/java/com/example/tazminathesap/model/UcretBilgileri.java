@@ -20,18 +20,17 @@ import lombok.ToString;
 @ToString
 @Entity
 public class UcretBilgileri extends BaseEntity {
-
 	private Double gunlukCiplakYevmiye;
 	private Double gunlukIkramiye;
 	private Double gunlukServis;
 	private Double gunlukYemek;
 	private Double gunlukYakacak;
 	private Double gunlukDigerHaklar;
+	
 	@JsonBackReference
 	@OneToOne(fetch = FetchType.EAGER, optional = true)
 	@JoinColumn(name = "tazminat_id", nullable = true)
 	private TazminatRapor tazminatRapor;
-	
 
 	public UcretBilgileri(Double gunlukCiplakYevmiye, Double gunlukIkramiye, Double gunlukServis, Double gunlukYemek, Double gunlukYakacak, Double gunlukDigerHaklar) {
 		this.gunlukCiplakYevmiye = gunlukCiplakYevmiye;

@@ -13,8 +13,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApiExceptionResponse {
-    
+public class ApiExceptionResponse { 
     private String message;
     private HttpStatus status;
     private LocalDateTime time;

@@ -12,6 +12,5 @@ public class TarihBilgileriController extends BaseController<TarihBilgileri, Tar
 
 	protected TarihBilgileriController(TarihBilgileriService service, GenericModelAssembler<TarihBilgileri> assembler) {
 		super(service, assembler);
-	}
-		
+	}		
 }

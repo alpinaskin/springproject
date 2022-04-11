@@ -20,11 +20,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @Entity
-public class GelecekDevreHesabi extends BaseEntity{
-    
+public class GelecekDevreHesabi extends BaseEntity {
     private BigDecimal aktifDevreToplami;
-    @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval = true )
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "gelecek_devre_hesabi_id")
     private List<ZararDonemi> zararDonemleri;
-
 }

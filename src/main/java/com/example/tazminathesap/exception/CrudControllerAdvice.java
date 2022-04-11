@@ -16,12 +16,14 @@ public class CrudControllerAdvice {
 
         return ResponseEntity.status(response.getStatus()).body(response);
     }
+    
     @ExceptionHandler(AlreadyExistException.class)
     ResponseEntity<ApiExceptionResponse> handleAlreadyExistException(AlreadyExistException exception){
         ApiExceptionResponse response = new ApiExceptionResponse(exception.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
 
         return ResponseEntity.status(response.getStatus()).body(response);
     }
+
     @ExceptionHandler(EntityNotCreatedException.class)
     ResponseEntity<ApiExceptionResponse> handleEntityNotCreatedException(EntityNotCreatedException exception){
         ApiExceptionResponse response = new ApiExceptionResponse(exception.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());

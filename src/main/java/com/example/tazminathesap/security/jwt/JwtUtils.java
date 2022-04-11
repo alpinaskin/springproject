@@ -4,7 +4,6 @@ import java.util.Date;
 
 import com.example.tazminathesap.model.UserDetailsImpl;
 
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.ExpiredJwtException;
@@ -18,44 +17,44 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 public class JwtUtils {
-    //@Value("${tazminathesap.app.jwtSecret}")
+    // @Value("${tazminathesap.app.jwtSecret}")
     private String jwtSecret = "HRlELXqpSB";
-    //@Value("${tazminathesap.app.jwtExpirationMs}")
+    // @Value("${tazminathesap.app.jwtExpirationMs}")
     private int jwtExpirationMs = 3600000;
-
 
     public String generateJwtToken(UserDetailsImpl userPrincipal) {
         return generateTokenFromUsername(userPrincipal.getEmail());
-      }
+    }
 
-    public String generateTokenFromUsername (String email) {
-        //UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
+    public String generateTokenFromUsername(String email) {
+        // UserDetailsImpl userPrincipal = (UserDetailsImpl)
+        // authentication.getPrincipal();
 
         return Jwts.builder()
-            .setSubject((email))
-            .setIssuedAt(new Date())
-            .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-            .signWith(SignatureAlgorithm.HS512, jwtSecret)
-            .compact();
+                .setSubject((email))
+                .setIssuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .compact();
     }
 
     public String getEmailFromJwtToken(String token) {
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
     }
 
-    public boolean validateJwtToken(String authToken){
+    public boolean validateJwtToken(String authToken) {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken).getBody().getSubject();
             return true;
         } catch (SignatureException e) {
             log.error("Yanlış JWT imzası: {}", e.getMessage());
-        } catch(MalformedJwtException e) {
+        } catch (MalformedJwtException e) {
             log.error("Yanlış token: {}", e.getMessage());
-        } catch( ExpiredJwtException e ) {
+        } catch (ExpiredJwtException e) {
             log.error("Süresi geçmiş JWT tokeni: {}", e.getMessage());
-        } catch( UnsupportedJwtException e) {
+        } catch (UnsupportedJwtException e) {
             log.error("Desteklenmeyen JWT tokeni : {}", e.getMessage());
-        } catch( IllegalArgumentException e ) {
+        } catch (IllegalArgumentException e) {
             log.error("JWT boş string : {}", e.getMessage());
         }
         return false;

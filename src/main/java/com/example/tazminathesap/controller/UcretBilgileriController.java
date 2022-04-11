@@ -13,5 +13,4 @@ public class UcretBilgileriController extends BaseController<UcretBilgileri, Ucr
 	protected UcretBilgileriController(UcretBilgileriService service, GenericModelAssembler<UcretBilgileri> assembler) {
 		super(service, assembler);
 	}
-	
 }

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @RequestMapping("api/v1/")
-public interface CommonController <E extends BaseEntity> {
+public interface CommonController<E extends BaseEntity> {
     @GetMapping
     ResponseEntity<CollectionModel<EntityModel<E>>> fetchAll();
 
@@ -25,7 +25,7 @@ public interface CommonController <E extends BaseEntity> {
     ResponseEntity<?> create(@RequestBody E entity);
 
     @PutMapping("/{id}")
-    ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody E entity );
+    ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody E entity);
 
     @DeleteMapping
     ResponseEntity<?> deleteById(@PathVariable("id") Long id);

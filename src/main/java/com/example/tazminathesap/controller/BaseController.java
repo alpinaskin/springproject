@@ -24,13 +24,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @CrossOrigin("*")
 public abstract class BaseController<E extends BaseEntity, S extends CrudService<E>> implements CommonController<E> {
-   Logger logger = LoggerFactory.getLogger(BaseController.class); 
+   Logger logger = LoggerFactory.getLogger(BaseController.class);
    protected final S service;
    protected final GenericModelAssembler<E> assembler;
 
-   @Autowired 
-   protected BaseController(S service, GenericModelAssembler<E> assembler)
-   {
+   @Autowired
+   protected BaseController(S service, GenericModelAssembler<E> assembler) {
       this.service = service;
       this.assembler = assembler;
    }
@@ -39,17 +38,18 @@ public abstract class BaseController<E extends BaseEntity, S extends CrudService
    @PreAuthorize("hasRole('USER')")
    public ResponseEntity<CollectionModel<EntityModel<E>>> fetchAll() {
       List<EntityModel<E>> entities = service.findAll().stream()
-         .map(assembler::toModel)
-         .collect(Collectors.toList());
+            .map(assembler::toModel)
+            .collect(Collectors.toList());
 
       return ResponseEntity.ok(
-               CollectionModel.of(entities, 
+            CollectionModel.of(entities,
                   linkTo(methodOn(BaseController.class).fetchAll()).withSelfRel()));
    }
 
    @Override
    public ResponseEntity<EntityModel<E>> fetchById(@PathVariable("id") Long id) {
-      E entity = service.findById(id).orElseThrow(() -> new NotFoundException("Id numarası" + id + " olan model bulunamadı!"));
+      E entity = service.findById(id)
+            .orElseThrow(() -> new NotFoundException("Id numarası" + id + " olan model bulunamadı!"));
 
       return ResponseEntity.ok(assembler.toModel(entity));
    };
@@ -62,8 +62,8 @@ public abstract class BaseController<E extends BaseEntity, S extends CrudService
       EntityModel<E> entityResource = assembler.toModel(savedEntity);
 
       return ResponseEntity
-         .created(entityResource.getRequiredLink(IanaLinkRelations.SELF).toUri())
-         .body(entityResource);
+            .created(entityResource.getRequiredLink(IanaLinkRelations.SELF).toUri())
+            .body(entityResource);
    }
 
    @Override
@@ -71,14 +71,14 @@ public abstract class BaseController<E extends BaseEntity, S extends CrudService
       E updatedEntity = service.update(entity, id);
 
       EntityModel<E> entityResource = assembler.toModel(updatedEntity);
-      
-      return ResponseEntity.created(entityResource.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityResource);
+
+      return ResponseEntity.created(entityResource.getRequiredLink(IanaLinkRelations.SELF).toUri())
+            .body(entityResource);
 
    }
 
    @Override
-   public ResponseEntity<?> deleteById(@PathVariable("id") Long id)
-   {
+   public ResponseEntity<?> deleteById(@PathVariable("id") Long id) {
       service.deleteById(id);
 
       return ResponseEntity.noContent().build();

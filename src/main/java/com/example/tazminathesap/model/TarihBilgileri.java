@@ -22,7 +22,6 @@ import lombok.ToString;
 @ToString
 @Entity
 public class TarihBilgileri extends BaseEntity {
-
 	private LocalDate raporTarihi;
 	private LocalDate davaTarihi;
 	private LocalDate kazaliDogumTarihi;
@@ -34,8 +33,8 @@ public class TarihBilgileri extends BaseEntity {
 	@JoinColumn(name = "tazminat_id", nullable = true)
 	private TazminatRapor tazminatRapor;
 
-
-	public TarihBilgileri(LocalDate raporTarihi, LocalDate davaTarihi, LocalDate kazaliDogumTarihi, LocalDate kazaTarihi, LocalDate ucretTarihi, LocalDate istirahatBitisTarihi) {
+	public TarihBilgileri(LocalDate raporTarihi, LocalDate davaTarihi, LocalDate kazaliDogumTarihi,
+			LocalDate kazaTarihi, LocalDate ucretTarihi, LocalDate istirahatBitisTarihi) {
 		this.raporTarihi = raporTarihi;
 		this.davaTarihi = davaTarihi;
 		this.kazaliDogumTarihi = kazaliDogumTarihi;
@@ -44,9 +43,8 @@ public class TarihBilgileri extends BaseEntity {
 		this.istirahatBitisTarihi = istirahatBitisTarihi;
 	}
 
-	
-	public Integer getYas(LocalDate currentDate){
-		if((this.kazaliDogumTarihi != null) && (currentDate != null))
+	public Integer getYas(LocalDate currentDate) {
+		if ((this.kazaliDogumTarihi != null) && (currentDate != null))
 			return Period.between(this.kazaliDogumTarihi, currentDate).getYears();
 		else
 			return null;

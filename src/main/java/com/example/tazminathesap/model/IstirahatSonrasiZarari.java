@@ -24,6 +24,7 @@ import lombok.ToString;
 public class IstirahatSonrasiZarari extends BaseEntity{
     private BigDecimal tazminatMiktar;
     private String aciklama;
+    
     @JsonBackReference
     @ManyToOne(cascade= CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
     @JoinColumn(name= "gecmisdevrehesabi_id", nullable = true)

@@ -19,7 +19,6 @@ import lombok.ToString;
 @ToString
 @Entity
 public class RaporBilgileri extends BaseEntity {
-	
 	private String davaliAdi;
 	private String davaciAdi;
 	private String davaciVekili;
@@ -27,14 +26,14 @@ public class RaporBilgileri extends BaseEntity {
 	private String bilirkisi;
 	private String raporunDuzenlenecegiMakam;
 	private String esasNo;
-	
+
 	@JsonBackReference
 	@OneToOne(fetch = FetchType.EAGER, optional = true)
 	@JoinColumn(name = "tazminat_id", nullable = true)
 	private TazminatRapor tazminatRapor;
-	
 
-	public RaporBilgileri(String davaliAdi, String davaciAdi, String davaciVekili, String davaliVekili, String bilirkisi, String raporunDuzenlenecegiMakam, String esasNo) {
+	public RaporBilgileri(String davaliAdi, String davaciAdi, String davaciVekili, String davaliVekili,
+			String bilirkisi, String raporunDuzenlenecegiMakam, String esasNo) {
 		this.davaliAdi = davaliAdi;
 		this.davaciAdi = davaciAdi;
 		this.davaciVekili = davaciVekili;
@@ -43,5 +42,4 @@ public class RaporBilgileri extends BaseEntity {
 		this.raporunDuzenlenecegiMakam = raporunDuzenlenecegiMakam;
 		this.esasNo = esasNo;
 	}
-
 }
